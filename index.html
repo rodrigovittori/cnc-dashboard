@@ -711,6 +711,13 @@
 </div><!-- /app -->
 
 <script>
+// ── XSS protection ───────────────────────────────────────
+function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+        {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+    ));
+}
+
 // ── Sheet IDs ─────────────────────────────────────────────
 const SHEETS = {
     events:      { id: '17edvipl3HGNqhxxnP5cfV2HdsiMl3tduuahyZL38URs', tab: 'Event Tracker' },
@@ -784,15 +791,15 @@ function renderOverview(events, memberships, responses) {
             const status = val(r,'Status');
             const sCls = status === 'Confirmed' ? 'b-conf' : status === 'Complete' ? 'b-active' : 'b-id';
             return `<tr>
-                <td class="name">${val(r,'Event Name')}</td>
-                <td>${val(r,'Association / Org')}</td>
-                <td>${val(r,'Date') || val(r,'date') || '-'}</td>
-                <td>${val(r,'Territory')}</td>
-                <td>${val(r,'BDM Owner')}</td>
-                <td>${val(r,'Event Type')}</td>
-                <td><span class="badge ${sCls}">${status || '-'}</span></td>
-                <td class="num">${cost}</td>
-                <td class="num">${sponsor}</td>
+                <td class="name">${esc(val(r,'Event Name'))}</td>
+                <td>${esc(val(r,'Association / Org'))}</td>
+                <td>${esc(val(r,'Date') || val(r,'date') || '-')}</td>
+                <td>${esc(val(r,'Territory'))}</td>
+                <td>${esc(val(r,'BDM Owner'))}</td>
+                <td>${esc(val(r,'Event Type'))}</td>
+                <td><span class="badge ${esc(sCls)}">${esc(status) || '-'}</span></td>
+                <td class="num">${esc(cost)}</td>
+                <td class="num">${esc(sponsor)}</td>
             </tr>`;
         }).join('');
     }
@@ -808,21 +815,21 @@ function renderEvents(events) {
         const geo = val(r,'Geofencing?');
         const geoCls = geo === 'Yes' ? 'b-active' : geo === 'Evaluate' ? 'b-pending' : '';
         return `<tr>
-            <td class="name">${val(r,'Event Name')}</td>
-            <td>${val(r,'Association / Org')}</td>
-            <td>${val(r,'Event Type')}</td>
-            <td>${val(r,'Date') || '-'}</td>
-            <td>${val(r,'Territory')}</td>
-            <td>${val(r,'BDM Owner')}</td>
-            <td><span class="badge ${sCls}">${status || '-'}</span></td>
-            <td class="num">${fmtCurrency(val(r,'Registration Cost'))}</td>
-            <td class="num">${fmtCurrency(val(r,'Sponsorship Amount'))}</td>
-            <td>${geo ? `<span class="badge ${geoCls}">${geo}</span>` : '-'}</td>
-            <td>${val(r,'Pre-Event Social Done?') || '-'}</td>
-            <td>${val(r,'Post-Event Survey Sent?') || '-'}</td>
-            <td class="num">${fmt(val(r,'Contacts Made'))}</td>
-            <td class="num">${fmt(val(r,'BDM Event Rating'))}</td>
-            <td>${val(r,'Attend Again?') || '-'}</td>
+            <td class="name">${esc(val(r,'Event Name'))}</td>
+            <td>${esc(val(r,'Association / Org'))}</td>
+            <td>${esc(val(r,'Event Type'))}</td>
+            <td>${esc(val(r,'Date') || '-')}</td>
+            <td>${esc(val(r,'Territory'))}</td>
+            <td>${esc(val(r,'BDM Owner'))}</td>
+            <td><span class="badge ${esc(sCls)}">${esc(status) || '-'}</span></td>
+            <td class="num">${esc(fmtCurrency(val(r,'Registration Cost')))}</td>
+            <td class="num">${esc(fmtCurrency(val(r,'Sponsorship Amount')))}</td>
+            <td>${geo ? `<span class="badge ${esc(geoCls)}">${esc(geo)}</span>` : '-'}</td>
+            <td>${esc(val(r,'Pre-Event Social Done?') || '-')}</td>
+            <td>${esc(val(r,'Post-Event Survey Sent?') || '-')}</td>
+            <td class="num">${esc(fmt(val(r,'Contacts Made')))}</td>
+            <td class="num">${esc(fmt(val(r,'BDM Event Rating')))}</td>
+            <td>${esc(val(r,'Attend Again?') || '-')}</td>
         </tr>`;
     }).join('');
 }
@@ -836,13 +843,13 @@ function renderMemberships(memberships) {
         const type = val(r,'Type');
         const dec = val(r,'Keep / Drop Decision');
         return `<tr>
-            <td class="name">${val(r,'Association Name')}</td>
-            <td><span class="badge ${typeCls[type]||'b-pending'}">${type||'-'}</span></td>
-            <td>${val(r,'BDM Owner')}</td>
-            <td><span class="badge b-active">${val(r,'Status')||'Active'}</span></td>
-            <td><span class="badge ${dec==='Keep'?'b-keep':'b-pending'}">${dec||'Pending'}</span></td>
-            <td>${val(r,'POC Name')}</td>
-            <td style="font-size:13px;color:var(--text-dim);max-width:260px;">${val(r,'Notes / Value Assessment')}</td>
+            <td class="name">${esc(val(r,'Association Name'))}</td>
+            <td><span class="badge ${esc(typeCls[type]||'b-pending')}">${esc(type)||'-'}</span></td>
+            <td>${esc(val(r,'BDM Owner'))}</td>
+            <td><span class="badge b-active">${esc(val(r,'Status')||'Active')}</span></td>
+            <td><span class="badge ${dec==='Keep'?'b-keep':'b-pending'}">${esc(dec)||'Pending'}</span></td>
+            <td>${esc(val(r,'POC Name'))}</td>
+            <td style="font-size:13px;color:var(--text-dim);max-width:260px;">${esc(val(r,'Notes / Value Assessment'))}</td>
         </tr>`;
     }).join('');
 
@@ -859,8 +866,8 @@ function renderMemberships(memberships) {
     const bdmTbody = document.getElementById('bdm-tbody');
     bdmTbody.innerHTML = Object.entries(bdmMap).map(([name, b]) =>
         `<tr>
-            <td class="name">${name}</td>
-            <td class="num ${hmClass(b.total, maxTotal)}">${b.total}</td>
+            <td class="name">${esc(name)}</td>
+            <td class="num ${esc(hmClass(b.total, maxTotal))}">${b.total}</td>
             <td class="num ${b.keep ? 'hm-2' : ''}">${b.keep || '-'}</td>
             <td class="num ${b.pending ? 'hm-1' : ''}">${b.pending || '-'}</td>
         </tr>`
@@ -881,14 +888,14 @@ function renderResponses(responses) {
         const rating = val(r, responses.headers[5]) || val(r,'Overall Event Rating (1-5)') || '-';
         const ratingCls = Number(rating) >= 4 ? 'hm-3' : Number(rating) >= 3 ? 'hm-2' : 'hm-1';
         return `<tr>
-            <td>${val(r, responses.headers[0]) || '-'}</td>
-            <td class="name">${val(r, responses.headers[1]) || '-'}</td>
-            <td>${val(r, responses.headers[2]) || '-'}</td>
-            <td>${val(r, responses.headers[4]) || '-'}</td>
-            <td class="num ${ratingCls}">${rating}</td>
-            <td>${val(r, responses.headers[6]) || '-'}</td>
-            <td class="num">${val(r, responses.headers[7]) || '-'}</td>
-            <td>${val(r, responses.headers[11]) || '-'}</td>
+            <td>${esc(val(r, responses.headers[0]) || '-')}</td>
+            <td class="name">${esc(val(r, responses.headers[1]) || '-')}</td>
+            <td>${esc(val(r, responses.headers[2]) || '-')}</td>
+            <td>${esc(val(r, responses.headers[4]) || '-')}</td>
+            <td class="num ${esc(ratingCls)}">${esc(rating)}</td>
+            <td>${esc(val(r, responses.headers[6]) || '-')}</td>
+            <td class="num">${esc(val(r, responses.headers[7]) || '-')}</td>
+            <td>${esc(val(r, responses.headers[11]) || '-')}</td>
         </tr>`;
     }).join('');
 }
