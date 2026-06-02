@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CNC Dashboard | The Knowing Agency</title>
+    <link rel="icon" type="image/png" href="https://cncfoundations.com/wp-content/uploads/2022/10/CNC-Foundations-Website-Logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -471,23 +472,23 @@
                 <div class="grid-4">
                     <div class="scorecard">
                         <div class="scorecard-label">Events Tracked</div>
-                        <div class="scorecard-value">3</div>
+                        <div class="scorecard-value" id="kpi-events">…</div>
                         <div class="scorecard-sub">2026 season</div>
                     </div>
                     <div class="scorecard">
                         <div class="scorecard-label">Active Memberships</div>
-                        <div class="scorecard-value">15</div>
+                        <div class="scorecard-value" id="kpi-members">…</div>
                         <div class="scorecard-sub">9 territories</div>
                     </div>
                     <div class="scorecard">
                         <div class="scorecard-label">BDMs Active</div>
-                        <div class="scorecard-value">9</div>
+                        <div class="scorecard-value" id="kpi-bdms">…</div>
                         <div class="scorecard-sub">Pilot: Haley McHugh</div>
                     </div>
                     <div class="scorecard">
                         <div class="scorecard-label">Survey Responses</div>
-                        <div class="scorecard-value red">0</div>
-                        <div class="scorecard-sub">Form launches this week</div>
+                        <div class="scorecard-value red" id="kpi-responses">…</div>
+                        <div class="scorecard-sub">Live from Google Forms</div>
                     </div>
                 </div>
 
@@ -535,29 +536,8 @@
                                     <th class="num">Sponsor Amt</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="name">MBI Golf Outing</td>
-                                    <td>MBI</td><td>Aug 22, 2026</td><td>Missouri</td><td>Haley McHugh</td><td>Golf Outing</td>
-                                    <td><span class="badge b-conf">Confirmed</span></td>
-                                    <td class="num hm-2">$250</td><td class="num">—</td>
-                                </tr>
-                                <tr>
-                                    <td class="name">AGC Missouri Annual Awards</td>
-                                    <td>AGCMO</td><td>Sep 15, 2026</td><td>Missouri</td><td>Haley McHugh</td><td>Charity Dinner</td>
-                                    <td><span class="badge b-id">Identified</span></td>
-                                    <td class="num hm-1">$150</td><td class="num">—</td>
-                                </tr>
-                                <tr>
-                                    <td class="name">ABC Carolinas Annual Conference</td>
-                                    <td>ABC Carolinas</td><td>Oct 8, 2026</td><td>Carolinas</td><td>Jason Sherrer</td><td>Conference</td>
-                                    <td><span class="badge b-id">Identified</span></td>
-                                    <td class="num hm-2">$400</td><td class="num hm-4">$2,500</td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td colspan="7"><strong>Total</strong></td>
-                                    <td class="num">$800</td><td class="num">$2,500</td>
-                                </tr>
+                            <tbody id="overview-events-tbody">
+                                <tr><td colspan="9" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -588,28 +568,8 @@
                                     <th class="num">Contacts</th><th class="num">Rating</th><th>Attend Again?</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="name">MBI Golf Outing</td><td>MBI</td><td>Golf Outing</td><td>Aug 22, 2026</td>
-                                    <td>Missouri</td><td>Haley McHugh</td><td><span class="badge b-conf">Confirmed</span></td>
-                                    <td class="num hm-2">$250</td><td class="num">—</td>
-                                    <td><span class="badge b-active">Yes</span></td><td>No</td><td>No</td>
-                                    <td class="num">—</td><td class="num">—</td><td>—</td>
-                                </tr>
-                                <tr>
-                                    <td class="name">AGC Missouri Annual Awards</td><td>AGCMO</td><td>Charity Dinner</td><td>Sep 15, 2026</td>
-                                    <td>Missouri</td><td>Haley McHugh</td><td><span class="badge b-id">Identified</span></td>
-                                    <td class="num hm-1">$150</td><td class="num">—</td>
-                                    <td><span class="badge b-pending">Evaluate</span></td><td>No</td><td>No</td>
-                                    <td class="num">—</td><td class="num">—</td><td>—</td>
-                                </tr>
-                                <tr>
-                                    <td class="name">ABC Carolinas Annual Conference</td><td>ABC Carolinas</td><td>Conference</td><td>Oct 8, 2026</td>
-                                    <td>Carolinas</td><td>Jason Sherrer</td><td><span class="badge b-id">Identified</span></td>
-                                    <td class="num hm-2">$400</td><td class="num hm-4">$2,500</td>
-                                    <td>No</td><td>No</td><td>No</td>
-                                    <td class="num">—</td><td class="num">—</td><td>—</td>
-                                </tr>
+                            <tbody id="events-tbody">
+                                <tr><td colspan="15" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -634,15 +594,9 @@
                         <div class="card-title">By BDM</div>
                         <div class="table-wrap">
                             <table>
-                                <thead><tr><th>BDM</th><th>Territory</th><th class="num">Assoc.</th><th class="num">Keep</th><th class="num">Pending</th></tr></thead>
-                                <tbody>
-                                    <tr><td class="name">Haley McHugh</td><td>Missouri</td><td class="num hm-4">4</td><td class="num hm-2">2</td><td class="num hm-2">2</td></tr>
-                                    <tr><td class="name">Jason Sherrer</td><td>Carolinas</td><td class="num hm-2">1</td><td class="num">0</td><td class="num hm-1">1</td></tr>
-                                    <tr><td class="name">Cari-Ellen Edgin</td><td>Maryland</td><td class="num hm-2">1</td><td class="num">0</td><td class="num hm-1">1</td></tr>
-                                    <tr><td class="name">Tyler Prazma</td><td>Nashville</td><td class="num hm-2">1</td><td class="num">0</td><td class="num hm-1">1</td></tr>
-                                    <tr><td class="name">Alec Mattingly</td><td>Tennessee</td><td class="num hm-2">1</td><td class="num">0</td><td class="num hm-1">1</td></tr>
-                                    <tr><td class="name">Multiple / TBD</td><td>Various</td><td class="num hm-3">7</td><td class="num">0</td><td class="num hm-3">7</td></tr>
-                                    <tr class="total-row"><td colspan="2">Grand Total</td><td class="num">15</td><td class="num">2</td><td class="num">13</td></tr>
+                                <thead><tr><th>BDM</th><th class="num">Assoc.</th><th class="num">Keep</th><th class="num">Pending</th></tr></thead>
+                                <tbody id="bdm-tbody">
+                                    <tr><td colspan="4" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -734,6 +688,17 @@
                         <div class="s-row" style="grid-column:1/-1;"><div class="s-num">13</div><div><div class="s-name">Notes for Christene / Brittany</div><div class="s-type">Paragraph &middot; Optional</div></div></div>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-title">Recent Submissions</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Timestamp</th><th>BDM</th><th>Event</th><th>Association</th><th class="num">Rating</th><th>Attend Again?</th><th class="num">Contacts</th><th>Geofence?</th></tr></thead>
+                            <tbody id="responses-tbody">
+                                <tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="card" style="margin-top:0;">
                     <div class="card-title">Live Form Preview</div>
                     <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform?embedded=true" width="100%" height="900" frameborder="0" marginheight="0" marginwidth="0" style="border:1px solid var(--border);border-radius:3px;">Loading…</iframe>
@@ -746,37 +711,212 @@
 </div><!-- /app -->
 
 <script>
-const MEMBERSHIPS = [
-    {name:"AGCMO (AGC Missouri Keystone)",type:"Membership",bdm:"Haley McHugh",status:"Active",dec:"Keep",poc:"Shannon Voss",notes:"Annual awards + monthly events. Education track."},
-    {name:"MBI",type:"Membership",bdm:"Haley McHugh",status:"Active",dec:"Keep",poc:"Jamie Friis",notes:"Quarterly. Andy Swanson also contact."},
-    {name:"ABC Tennessee",type:"Membership",bdm:"Alec Mattingly",status:"Active",dec:"Pending",poc:"Rachel Gorecki",notes:"Annual event + luncheons. Education track."},
-    {name:"ABC Carolinas",type:"Sponsorship",bdm:"Jason Sherrer",status:"Active",dec:"Pending",poc:"TBD",notes:"Multiple events per year. Sponsor level."},
-    {name:"ABC Baltimore",type:"Sponsorship",bdm:"Cari-Ellen Edgin",status:"Active",dec:"Pending",poc:"TBD",notes:"Maryland territory. Sponsor level."},
-    {name:"Indiana Subcontractors Assoc.",type:"Membership",bdm:"TBD",status:"Active",dec:"Pending",poc:"Pat Drewry",notes:"Education track. Indiana territory."},
-    {name:"AGC Kentucky",type:"Membership",bdm:"TBD",status:"Active",dec:"Pending",poc:"Ronnie Perkins",notes:"Kentucky territory."},
-    {name:"DBIA",type:"Sponsorship",bdm:"Multiple",status:"Active",dec:"Pending",poc:"TBD",notes:"Annual + regional. Multi-BDM benefit."},
-    {name:"SIBA",type:"Sponsorship",bdm:"Tyler Prazma",status:"Active",dec:"Pending",poc:"TBD",notes:"Nashville territory."},
-    {name:"FCA",type:"Sponsorship",bdm:"Multiple",status:"Active",dec:"Pending",poc:"TBD",notes:"Annual golf outing. Multi-BDM."},
-    {name:"CleanPower",type:"Event-Only",bdm:"Multiple",status:"Active",dec:"Pending",poc:"TBD",notes:"Annual conference only."},
-    {name:"ASA of Iowa",type:"Event-Only",bdm:"Haley McHugh",status:"Active",dec:"Pending",poc:"TBD",notes:"Annual event. Iowa / Missouri territory."},
-    {name:"ASA Midwest",type:"Event-Only",bdm:"Multiple",status:"Active",dec:"Pending",poc:"TBD",notes:"Recurring regional. Multi-BDM."},
-    {name:"AGC Colorado",type:"Event-Only",bdm:"TBD",status:"Active",dec:"Pending",poc:"TBD",notes:"Meet the GC format."},
-    {name:"AIA Indiana",type:"Event-Only",bdm:"TBD",status:"Active",dec:"Pending",poc:"TBD",notes:"Annual golf. Indiana territory."},
-];
+// ── Sheet IDs ─────────────────────────────────────────────
+const SHEETS = {
+    events:      { id: '17edvipl3HGNqhxxnP5cfV2HdsiMl3tduuahyZL38URs', tab: 'Event Tracker' },
+    memberships: { id: '11Uoo0y0rG9mObSmzHFrI7bMqzBfu34TU8Hw6kZ-I5Zs', tab: 'Membership Tracker' },
+    responses:   { id: '1TCGl8X4P2zdq72bGW8nFZcvudgwKpy1w4iP2Pv-jd9I', tab: 'Form Responses 1' },
+};
 
-function renderMemberships() {
+// ── Fetch + parse Google Sheets gviz JSON ─────────────────
+async function fetchSheet(id, tab) {
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}&headers=1`;
+    try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const headers = json.table.cols.map(c => c.label);
+        const rows = (json.table.rows || [])
+            .map(row => {
+                const obj = {};
+                (row.c || []).forEach((cell, i) => {
+                    obj[headers[i]] = cell ? (cell.f || cell.v) : '';
+                });
+                return obj;
+            })
+            .filter(row => headers[0] && row[headers[0]]);
+        return { headers, rows };
+    } catch(e) {
+        console.warn('Sheet fetch failed:', id, e);
+        return { headers: [], rows: [] };
+    }
+}
+
+function val(row, key) { return (row[key] || '').toString().trim(); }
+
+function hmClass(v, max) {
+    if (!v || v === '-' || v === '' || isNaN(Number(v))) return '';
+    const ratio = Number(v) / max;
+    if (ratio <= 0) return '';
+    if (ratio < 0.25) return 'hm-1';
+    if (ratio < 0.5)  return 'hm-2';
+    if (ratio < 0.75) return 'hm-3';
+    return 'hm-4';
+}
+
+function fmt(v) {
+    if (v === null || v === undefined || v === '') return '-';
+    const n = Number(String(v).replace(/[$,]/g,''));
+    if (!isNaN(n) && n === 0) return '-';
+    return v;
+}
+
+function fmtCurrency(v) {
+    const n = Number(String(v).replace(/[$,]/g,''));
+    if (isNaN(n) || n === 0) return '-';
+    return '$' + n.toLocaleString();
+}
+
+// ── Render: Overview KPIs ─────────────────────────────────
+function renderOverview(events, memberships, responses) {
+    setText('kpi-events', events.rows.length || 0);
+    setText('kpi-members', memberships.rows.filter(r => val(r,'Status') === 'Active').length || memberships.rows.length);
+    const bdms = new Set(events.rows.map(r => val(r,'BDM Owner')).filter(Boolean));
+    setText('kpi-bdms', bdms.size || 9);
+    setText('kpi-responses', responses.rows.length || 0);
+
+    // Overview events table
+    const tbody = document.getElementById('overview-events-tbody');
+    if (events.rows.length) {
+        tbody.innerHTML = events.rows.map(r => {
+            const cost = fmtCurrency(val(r,'Registration Cost'));
+            const sponsor = fmtCurrency(val(r,'Sponsorship Amount'));
+            const status = val(r,'Status');
+            const sCls = status === 'Confirmed' ? 'b-conf' : status === 'Complete' ? 'b-active' : 'b-id';
+            return `<tr>
+                <td class="name">${val(r,'Event Name')}</td>
+                <td>${val(r,'Association / Org')}</td>
+                <td>${val(r,'Date') || val(r,'date') || '-'}</td>
+                <td>${val(r,'Territory')}</td>
+                <td>${val(r,'BDM Owner')}</td>
+                <td>${val(r,'Event Type')}</td>
+                <td><span class="badge ${sCls}">${status || '-'}</span></td>
+                <td class="num">${cost}</td>
+                <td class="num">${sponsor}</td>
+            </tr>`;
+        }).join('');
+    }
+}
+
+// ── Render: Events tab ────────────────────────────────────
+function renderEvents(events) {
+    const tbody = document.getElementById('events-tbody');
+    if (!events.rows.length) return;
+    tbody.innerHTML = events.rows.map(r => {
+        const status = val(r,'Status');
+        const sCls = status === 'Confirmed' ? 'b-conf' : status === 'Complete' ? 'b-active' : 'b-id';
+        const geo = val(r,'Geofencing?');
+        const geoCls = geo === 'Yes' ? 'b-active' : geo === 'Evaluate' ? 'b-pending' : '';
+        return `<tr>
+            <td class="name">${val(r,'Event Name')}</td>
+            <td>${val(r,'Association / Org')}</td>
+            <td>${val(r,'Event Type')}</td>
+            <td>${val(r,'Date') || '-'}</td>
+            <td>${val(r,'Territory')}</td>
+            <td>${val(r,'BDM Owner')}</td>
+            <td><span class="badge ${sCls}">${status || '-'}</span></td>
+            <td class="num">${fmtCurrency(val(r,'Registration Cost'))}</td>
+            <td class="num">${fmtCurrency(val(r,'Sponsorship Amount'))}</td>
+            <td>${geo ? `<span class="badge ${geoCls}">${geo}</span>` : '-'}</td>
+            <td>${val(r,'Pre-Event Social Done?') || '-'}</td>
+            <td>${val(r,'Post-Event Survey Sent?') || '-'}</td>
+            <td class="num">${fmt(val(r,'Contacts Made'))}</td>
+            <td class="num">${fmt(val(r,'BDM Event Rating'))}</td>
+            <td>${val(r,'Attend Again?') || '-'}</td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Render: Memberships tab ───────────────────────────────
+function renderMemberships(memberships) {
     const typeCls = {Membership:'b-member',Sponsorship:'b-sponsor','Event-Only':'b-event'};
-    document.getElementById('mem-tbody').innerHTML = MEMBERSHIPS.map(m =>
+    const tbody = document.getElementById('mem-tbody');
+    const rows = memberships.rows.length ? memberships.rows : [];
+    tbody.innerHTML = rows.map(r => {
+        const type = val(r,'Type');
+        const dec = val(r,'Keep / Drop Decision');
+        return `<tr>
+            <td class="name">${val(r,'Association Name')}</td>
+            <td><span class="badge ${typeCls[type]||'b-pending'}">${type||'-'}</span></td>
+            <td>${val(r,'BDM Owner')}</td>
+            <td><span class="badge b-active">${val(r,'Status')||'Active'}</span></td>
+            <td><span class="badge ${dec==='Keep'?'b-keep':'b-pending'}">${dec||'Pending'}</span></td>
+            <td>${val(r,'POC Name')}</td>
+            <td style="font-size:13px;color:var(--text-dim);max-width:260px;">${val(r,'Notes / Value Assessment')}</td>
+        </tr>`;
+    }).join('');
+
+    // BDM breakdown
+    const bdmMap = {};
+    rows.forEach(r => {
+        const bdm = val(r,'BDM Owner') || 'TBD';
+        if (!bdmMap[bdm]) bdmMap[bdm] = { total: 0, keep: 0, pending: 0 };
+        bdmMap[bdm].total++;
+        if (val(r,'Keep / Drop Decision') === 'Keep') bdmMap[bdm].keep++;
+        else bdmMap[bdm].pending++;
+    });
+    const maxTotal = Math.max(...Object.values(bdmMap).map(b => b.total), 1);
+    const bdmTbody = document.getElementById('bdm-tbody');
+    bdmTbody.innerHTML = Object.entries(bdmMap).map(([name, b]) =>
         `<tr>
-            <td class="name">${m.name}</td>
-            <td><span class="badge ${typeCls[m.type]}">${m.type}</span></td>
-            <td>${m.bdm}</td>
-            <td><span class="badge b-active">${m.status}</span></td>
-            <td><span class="badge ${m.dec==='Keep'?'b-keep':'b-pending'}">${m.dec}</span></td>
-            <td>${m.poc}</td>
-            <td style="font-size:13px;color:var(--text-dim);max-width:260px;">${m.notes}</td>
+            <td class="name">${name}</td>
+            <td class="num ${hmClass(b.total, maxTotal)}">${b.total}</td>
+            <td class="num ${b.keep ? 'hm-2' : ''}">${b.keep || '-'}</td>
+            <td class="num ${b.pending ? 'hm-1' : ''}">${b.pending || '-'}</td>
         </tr>`
-    ).join('');
+    ).join('') + `<tr class="total-row"><td>Grand Total</td><td class="num">${rows.length}</td><td class="num">${rows.filter(r=>val(r,'Keep / Drop Decision')==='Keep').length}</td><td class="num">${rows.filter(r=>val(r,'Keep / Drop Decision')!=='Keep').length}</td></tr>`;
+}
+
+// ── Render: Survey responses ──────────────────────────────
+function renderResponses(responses) {
+    const tbody = document.getElementById('responses-tbody');
+    const count = document.getElementById('kpi-responses');
+    if (count) count.textContent = responses.rows.length;
+
+    if (!responses.rows.length) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:24px;">No submissions yet</td></tr>';
+        return;
+    }
+    tbody.innerHTML = responses.rows.slice().reverse().map(r => {
+        const rating = val(r, responses.headers[5]) || val(r,'Overall Event Rating (1-5)') || '-';
+        const ratingCls = Number(rating) >= 4 ? 'hm-3' : Number(rating) >= 3 ? 'hm-2' : 'hm-1';
+        return `<tr>
+            <td>${val(r, responses.headers[0]) || '-'}</td>
+            <td class="name">${val(r, responses.headers[1]) || '-'}</td>
+            <td>${val(r, responses.headers[2]) || '-'}</td>
+            <td>${val(r, responses.headers[4]) || '-'}</td>
+            <td class="num ${ratingCls}">${rating}</td>
+            <td>${val(r, responses.headers[6]) || '-'}</td>
+            <td class="num">${val(r, responses.headers[7]) || '-'}</td>
+            <td>${val(r, responses.headers[11]) || '-'}</td>
+        </tr>`;
+    }).join('');
+}
+
+function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+function setFooter(ts) {
+    document.querySelectorAll('.data-footer').forEach(el => {
+        el.textContent = `Live data · Last refreshed: ${ts} · The Knowing Agency`;
+    });
+}
+
+// ── Login + load ──────────────────────────────────────────
+async function loadAllData() {
+    setFooter('Loading…');
+    const [events, memberships, responses] = await Promise.all([
+        fetchSheet(SHEETS.events.id, SHEETS.events.tab),
+        fetchSheet(SHEETS.memberships.id, SHEETS.memberships.tab),
+        fetchSheet(SHEETS.responses.id, SHEETS.responses.tab),
+    ]);
+    renderOverview(events, memberships, responses);
+    renderEvents(events);
+    renderMemberships(memberships);
+    renderResponses(responses);
+    setFooter(new Date().toLocaleString('en-US', {dateStyle:'medium', timeStyle:'short'}));
 }
 
 function doLogin() {
@@ -785,7 +925,7 @@ function doLogin() {
     if (u === 'admin' && p === 'CNC_preview_26') {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('app').classList.add('visible');
-        renderMemberships();
+        loadAllData();
     } else {
         document.getElementById('login-error').style.display = 'block';
     }
@@ -799,9 +939,7 @@ function showPage(name, btn) {
     btn.classList.add('active');
 }
 
-function resetFilters() {
-    // Placeholder — filters are visual only in this preview
-}
+function resetFilters() { loadAllData(); }
 </script>
 </body>
 </html>
