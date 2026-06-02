@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNC Automation Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0C0C0C;
+            --bg-card: #141414;
+            --border: #222222;
+            --red: #8B1A1A;
+            --red-bright: #C0392B;
+            --red-dim: #5C1111;
+            --text-primary: #F2F0EB;
+            --text-secondary: #888880;
+            --text-dim: #444440;
+            --green: #2ECC71;
+            --yellow: #F39C12;
+            --blue: #3498DB;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+
+        /* ── LOGIN ─────────────────────────────────────────── */
+        #login-screen {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        #login-screen.hidden { opacity: 0; pointer-events: none; transform: translateY(-24px); }
+
+        .login-bg {
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(139,26,26,0.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(139,26,26,0.09) 0%, transparent 50%);
+        }
+        .login-bg::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(139,26,26,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139,26,26,0.06) 1px, transparent 1px);
+            background-size: 64px 64px;
+        }
+
+        .login-box {
+            position: relative; width: 420px; padding: 52px;
+            background: rgba(18,18,18,0.95);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--red);
+        }
+        .login-eyebrow {
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            font-size: 10px; letter-spacing: 0.35em;
+            color: var(--red-bright); text-transform: uppercase; margin-bottom: 10px;
+        }
+        .login-title {
+            font-family: 'Syne', sans-serif; font-weight: 800;
+            font-size: 30px; line-height: 1.1; margin-bottom: 6px;
+        }
+        .login-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 40px; }
+        .login-label {
+            display: block; font-size: 10px; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-secondary); margin-bottom: 8px;
+        }
+        .login-field { margin-bottom: 18px; }
+        .login-input {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border); border-radius: 1px;
+            padding: 13px 16px;
+            font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary);
+            outline: none; transition: border-color 0.2s;
+        }
+        .login-input:focus { border-color: var(--red); }
+        .login-btn {
+            width: 100%; margin-top: 24px; padding: 15px;
+            background: var(--red); border: none; color: white;
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+            cursor: pointer; transition: background 0.2s, transform 0.1s;
+        }
+        .login-btn:hover { background: var(--red-bright); }
+        .login-btn:active { transform: scale(0.99); }
+        .login-error { color: #E74C3C; font-size: 12px; margin-top: 10px; display: none; }
+
+        /* ── DASHBOARD ─────────────────────────────────────── */
+        #dashboard { display: none; min-height: 100vh; flex-direction: column; }
+        #dashboard.visible { display: flex; }
+
+        .topbar {
+            height: 54px; background: #0D0D0D;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; padding: 0 28px; gap: 20px;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .topbar-brand {
+            font-family: 'Syne', sans-serif; font-weight: 800;
+            font-size: 13px; letter-spacing: 0.18em; color: var(--text-primary);
+            display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+        }
+        .brand-dot { width: 7px; height: 7px; background: var(--red-bright); border-radius: 50%; }
+        .topbar-nav { display: flex; gap: 2px; margin-left: auto; }
+        .nav-btn {
+            padding: 7px 18px; font-family: 'DM Sans', sans-serif;
+            font-size: 13px; font-weight: 500; color: var(--text-secondary);
+            background: none; border: none; cursor: pointer;
+            border-radius: 3px; transition: all 0.15s;
+        }
+        .nav-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-btn.active { color: var(--text-primary); background: rgba(139,26,26,0.2); }
+        .topbar-meta { font-size: 11px; color: var(--text-dim); margin-left: 12px; flex-shrink: 0; }
+
+        .content { flex: 1; padding: 32px; max-width: 1440px; width: 100%; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        .section-label {
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+            color: var(--red-bright); margin-bottom: 22px;
+        }
+
+        /* KPI */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+        .kpi-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-top: 2px solid var(--red-dim); padding: 24px;
+            animation: fadeUp 0.4s ease both;
+        }
+        .kpi-card:nth-child(1) { animation-delay: 0.05s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.1s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.15s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.2s; }
+        .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 14px; }
+        .kpi-value { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 40px; color: var(--text-primary); line-height: 1; }
+        .kpi-sub { font-size: 11px; color: var(--text-dim); margin-top: 8px; }
+
+        /* Two-col */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+
+        /* Card */
+        .card { background: var(--bg-card); border: 1px solid var(--border); padding: 24px; }
+        .card-title {
+            font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.06em;
+            color: var(--text-primary); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .card-title::before { content: ''; display: block; width: 3px; height: 14px; background: var(--red-bright); }
+
+        /* Badges */
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 2px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+        .b-active { background: rgba(46,204,113,0.12); color: #2ECC71; }
+        .b-confirmed { background: rgba(52,152,219,0.12); color: #3498DB; }
+        .b-identified { background: rgba(243,156,18,0.12); color: #F39C12; }
+        .b-pending { background: rgba(149,165,166,0.12); color: #95A5A6; }
+        .b-keep { background: rgba(46,204,113,0.12); color: #2ECC71; }
+        .b-dropped { background: rgba(231,76,60,0.12); color: #E74C3C; }
+        .b-member { background: rgba(52,152,219,0.12); color: #3498DB; }
+        .b-sponsor { background: rgba(155,89,182,0.12); color: #9B59B6; }
+        .b-event { background: rgba(243,156,18,0.12); color: #F39C12; }
+
+        /* Bar chart */
+        .bar-chart { display: flex; flex-direction: column; gap: 12px; }
+        .bar-row { display: flex; align-items: center; gap: 14px; }
+        .bar-lbl { font-size: 12px; color: var(--text-secondary); width: 120px; flex-shrink: 0; text-align: right; }
+        .bar-track { flex: 1; height: 5px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--red); border-radius: 2px; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+        .bar-fill.f-blue { background: var(--blue); }
+        .bar-fill.f-yellow { background: var(--yellow); }
+        .bar-fill.f-green { background: var(--green); }
+        .bar-num { font-size: 12px; font-weight: 600; color: var(--text-primary); width: 20px; text-align: right; }
+
+        /* Table */
+        .card-full { background: var(--bg-card); border: 1px solid var(--border); padding: 24px; margin-bottom: 18px; overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th {
+            text-align: left; padding: 10px 14px;
+            font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--text-dim); border-bottom: 1px solid var(--border); white-space: nowrap;
+        }
+        .data-table td { padding: 13px 14px; border-bottom: 1px solid rgba(34,34,34,0.6); color: var(--text-secondary); vertical-align: middle; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover td { background: rgba(255,255,255,0.015); }
+        .td-name { color: var(--text-primary) !important; font-weight: 500; }
+
+        /* BDM breakdown */
+        .bdm-row { display: flex; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(34,34,34,0.5); gap: 14px; font-size: 13px; }
+        .bdm-row:last-child { border: none; }
+        .bdm-name { flex: 1; color: var(--text-primary); font-weight: 500; }
+        .bdm-ter { width: 100px; color: var(--text-dim); font-size: 11px; }
+        .bdm-pill { background: rgba(139,26,26,0.15); color: var(--red-bright); font-weight: 700; font-size: 12px; padding: 3px 12px; border-radius: 2px; }
+
+        /* Pipeline */
+        .pipeline-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        .pip-month { text-align: center; padding: 14px 8px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); }
+        .pip-lbl { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+        .pip-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: var(--text-primary); }
+        .pip-num.has-data { color: var(--red-bright); }
+
+        /* Survey fields */
+        .survey-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .s-field { padding: 16px 20px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-left: 2px solid var(--red-dim); display: flex; gap: 16px; align-items: flex-start; }
+        .s-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--red-dim); line-height: 1; width: 28px; flex-shrink: 0; }
+        .s-name { font-weight: 600; font-size: 13px; color: var(--text-primary); margin-bottom: 4px; }
+        .s-type { font-size: 11px; color: var(--text-dim); }
+
+        /* Triggers */
+        .trigger-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+        .trigger-row:last-child { border: none; }
+        .tr-event { padding: 13px 16px; width: 230px; flex-shrink: 0; color: var(--text-primary); font-weight: 500; }
+        .tr-action { padding: 13px 16px; flex: 1; color: var(--text-secondary); border-left: 1px solid var(--border); }
+
+        .form-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 22px; padding: 14px 28px;
+            background: var(--red); color: white;
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+            text-decoration: none; cursor: pointer; border: none;
+            transition: background 0.2s;
+        }
+        .form-cta:hover { background: var(--red-bright); }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── LOGIN ─────────────────────────────────────────────── -->
+<div id="login-screen">
+    <div class="login-bg"></div>
+    <div class="login-box">
+        <div class="login-eyebrow">CNC Foundations</div>
+        <h1 class="login-title">Automation<br>Dashboard</h1>
+        <p class="login-sub">Internal preview &mdash; Jun 2026</p>
+        <div class="login-field">
+            <label class="login-label" for="u">Username</label>
+            <input class="login-input" id="u" type="text" placeholder="admin" autocomplete="username">
+        </div>
+        <div class="login-field">
+            <label class="login-label" for="p">Password</label>
+            <input class="login-input" id="p" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
+        </div>
+        <button class="login-btn" onclick="doLogin()">Access Dashboard &rarr;</button>
+        <div class="login-error" id="login-error">Invalid credentials &mdash; try again.</div>
+    </div>
+</div>
+
+<!-- ── DASHBOARD ─────────────────────────────────────────── -->
+<div id="dashboard">
+    <nav class="topbar">
+        <div class="topbar-brand"><div class="brand-dot"></div>CNC AUTOMATION</div>
+        <div class="topbar-nav">
+            <button class="nav-btn active" onclick="switchTab('overview',this)">Overview</button>
+            <button class="nav-btn" onclick="switchTab('events',this)">Events</button>
+            <button class="nav-btn" onclick="switchTab('memberships',this)">Memberships</button>
+            <button class="nav-btn" onclick="switchTab('survey',this)">Post-Event Survey</button>
+        </div>
+        <div class="topbar-meta">Preview &middot; Jun 4, 2026 Meeting</div>
+    </nav>
+
+    <div class="content">
+
+        <!-- OVERVIEW -->
+        <div class="tab-panel active" id="tab-overview">
+            <div class="section-label">Dashboard Overview</div>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Events Tracked</div>
+                    <div class="kpi-value">3</div>
+                    <div class="kpi-sub">2026 season &middot; growing weekly</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Active Memberships</div>
+                    <div class="kpi-value">15</div>
+                    <div class="kpi-sub">Across 9 territories</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">BDMs Active</div>
+                    <div class="kpi-value">9</div>
+                    <div class="kpi-sub">Pilot: Haley McHugh</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Survey Responses</div>
+                    <div class="kpi-value">0</div>
+                    <div class="kpi-sub">Form launches this week</div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-title">Events by Status</div>
+                    <div class="bar-chart">
+                        <div class="bar-row"><div class="bar-lbl">Identified</div><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><div class="bar-num">2</div></div>
+                        <div class="bar-row"><div class="bar-lbl">Confirmed</div><div class="bar-track"><div class="bar-fill f-blue" style="width:33%"></div></div><div class="bar-num">1</div></div>
+                        <div class="bar-row"><div class="bar-lbl">Registered</div><div class="bar-track"><div class="bar-fill f-green" style="width:0%"></div></div><div class="bar-num">0</div></div>
+                        <div class="bar-row"><div class="bar-lbl">Complete</div><div class="bar-track"><div class="bar-fill f-green" style="width:0%"></div></div><div class="bar-num">0</div></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Memberships by Type</div>
+                    <div class="bar-chart">
+                        <div class="bar-row"><div class="bar-lbl">Membership</div><div class="bar-track"><div class="bar-fill" style="width:47%"></div></div><div class="bar-num">7</div></div>
+                        <div class="bar-row"><div class="bar-lbl">Sponsorship</div><div class="bar-track"><div class="bar-fill f-blue" style="width:33%"></div></div><div class="bar-num">5</div></div>
+                        <div class="bar-row"><div class="bar-lbl">Event-Only</div><div class="bar-track"><div class="bar-fill f-yellow" style="width:20%"></div></div><div class="bar-num">3</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-full">
+                <div class="card-title">Upcoming Events</div>
+                <table class="data-table">
+                    <thead><tr><th>Event</th><th>Association</th><th>Date</th><th>Territory</th><th>BDM</th><th>Type</th><th>Status</th><th>Sponsorship</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="td-name">MBI Golf Outing</td><td>MBI</td><td>Aug 22, 2026</td><td>Missouri</td><td>Haley McHugh</td><td>Golf Outing</td>
+                            <td><span class="badge b-confirmed">Confirmed</span></td><td>&mdash;</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">AGC Missouri Annual Awards</td><td>AGCMO</td><td>Sep 15, 2026</td><td>Missouri</td><td>Haley McHugh</td><td>Charity Dinner</td>
+                            <td><span class="badge b-identified">Identified</span></td><td>&mdash;</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">ABC Carolinas Annual Conference</td><td>ABC Carolinas</td><td>Oct 8, 2026</td><td>Carolinas</td><td>Jason Sherrer</td><td>Conference</td>
+                            <td><span class="badge b-identified">Identified</span></td><td>$2,500</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- EVENTS -->
+        <div class="tab-panel" id="tab-events">
+            <div class="section-label">Event Tracker &mdash; 2026</div>
+            <div class="card-full">
+                <div class="card-title">All Events (21 fields tracked)</div>
+                <table class="data-table">
+                    <thead><tr><th>Event Name</th><th>Association</th><th>Type</th><th>Date</th><th>Territory</th><th>BDM</th><th>Status</th><th>Reg. Cost</th><th>Sponsorship</th><th>Geofencing?</th><th>Pre-Social?</th><th>Survey Sent?</th><th>Contacts</th><th>Rating</th><th>Attend Again?</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="td-name">MBI Golf Outing</td><td>MBI</td><td>Golf Outing</td><td>Aug 22, 2026</td><td>Missouri</td><td>Haley McHugh</td>
+                            <td><span class="badge b-confirmed">Confirmed</span></td>
+                            <td>$250</td><td>&mdash;</td><td><span class="badge b-active">Yes</span></td><td>No</td><td>No</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">AGC Missouri Annual Awards</td><td>AGCMO</td><td>Charity Dinner</td><td>Sep 15, 2026</td><td>Missouri</td><td>Haley McHugh</td>
+                            <td><span class="badge b-identified">Identified</span></td>
+                            <td>$150</td><td>&mdash;</td><td><span class="badge b-pending">Evaluate</span></td><td>No</td><td>No</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">ABC Carolinas Annual Conference</td><td>ABC Carolinas</td><td>Conference</td><td>Oct 8, 2026</td><td>Carolinas</td><td>Jason Sherrer</td>
+                            <td><span class="badge b-identified">Identified</span></td>
+                            <td>$400</td><td>$2,500</td><td>No</td><td>No</td><td>No</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card" style="border-top:none;">
+                <p style="font-size:12px;color:var(--text-dim);">Full 21-column tracker with dropdowns, BDM references, and automation flags lives in Google Sheets. This view shows key columns for the meeting preview.</p>
+            </div>
+        </div>
+
+        <!-- MEMBERSHIPS -->
+        <div class="tab-panel" id="tab-memberships">
+            <div class="section-label">Membership Tracker</div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-label">Total Associations</div><div class="kpi-value">15</div><div class="kpi-sub">Tracked &amp; categorized</div></div>
+                <div class="kpi-card"><div class="kpi-label">Keep Decision</div><div class="kpi-value">2</div><div class="kpi-sub">AGCMO + MBI confirmed</div></div>
+                <div class="kpi-card"><div class="kpi-label">Pending Decision</div><div class="kpi-value">13</div><div class="kpi-sub">Awaiting Christene review</div></div>
+                <div class="kpi-card"><div class="kpi-label">Annual Cost Logged</div><div class="kpi-value">TBD</div><div class="kpi-sub">Costs to be added</div></div>
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-title">By BDM</div>
+                    <div class="bdm-row"><div class="bdm-name">Haley McHugh</div><div class="bdm-ter">Missouri</div><div class="bdm-pill">4</div></div>
+                    <div class="bdm-row"><div class="bdm-name">Jason Sherrer</div><div class="bdm-ter">Carolinas</div><div class="bdm-pill">1</div></div>
+                    <div class="bdm-row"><div class="bdm-name">Cari-Ellen Edgin</div><div class="bdm-ter">Maryland</div><div class="bdm-pill">1</div></div>
+                    <div class="bdm-row"><div class="bdm-name">Tyler Prazma</div><div class="bdm-ter">Nashville</div><div class="bdm-pill">1</div></div>
+                    <div class="bdm-row"><div class="bdm-name">Alec Mattingly</div><div class="bdm-ter">Tennessee</div><div class="bdm-pill">1</div></div>
+                    <div class="bdm-row"><div class="bdm-name">Multiple / TBD</div><div class="bdm-ter">Various</div><div class="bdm-pill">7</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Renewal Pipeline</div>
+                    <div class="pipeline-grid">
+                        <div class="pip-month"><div class="pip-lbl">Jan</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Feb</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Mar</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Apr</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">May</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Jun</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Jul</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Aug</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Sep</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Oct</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Nov</div><div class="pip-num">0</div></div>
+                        <div class="pip-month"><div class="pip-lbl">Dec</div><div class="pip-num">0</div></div>
+                    </div>
+                    <p style="font-size:11px;color:var(--text-dim);margin-top:14px;">Renewal months populate as dates are added to the tracker.</p>
+                </div>
+            </div>
+
+            <div class="card-full">
+                <div class="card-title">All 15 Associations</div>
+                <table class="data-table">
+                    <thead><tr><th>Association</th><th>Type</th><th>BDM</th><th>Status</th><th>Decision</th><th>POC</th><th>Notes</th></tr></thead>
+                    <tbody id="mem-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SURVEY -->
+        <div class="tab-panel" id="tab-survey">
+            <div class="section-label">Post-Event Survey</div>
+            <div class="two-col" style="margin-bottom:18px;">
+                <div class="card">
+                    <div class="card-title">Form Overview</div>
+                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">13-field survey filled by BDMs within 24 hours of each event. Replaces Mike's informal phone call + photo sends. Automatically triggers the 6-week follow-up sequence.</p>
+                    <div style="display:flex;gap:12px;">
+                        <div style="text-align:center;padding:16px 20px;background:rgba(139,26,26,0.1);border:1px solid var(--red-dim);">
+                            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--red-bright);">13</div>
+                            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;">Fields</div>
+                        </div>
+                        <div style="text-align:center;padding:16px 20px;background:rgba(139,26,26,0.1);border:1px solid var(--red-dim);">
+                            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--red-bright);">5</div>
+                            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;">Sections</div>
+                        </div>
+                        <div style="text-align:center;padding:16px 20px;background:rgba(139,26,26,0.1);border:1px solid var(--red-dim);">
+                            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--red-bright);">5</div>
+                            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;">Auto-Triggers</div>
+                        </div>
+                    </div>
+                    <button class="form-cta" onclick="alert('Google Form URL will be added once form is live.')">Open Google Form &rarr;</button>
+                </div>
+                <div class="card">
+                    <div class="card-title">Automation Triggers (n8n)</div>
+                    <div class="trigger-row"><div class="tr-event">Rating &ge; 4 + Attend Again = Yes</div><div class="tr-action">Flag event for next-year planning</div></div>
+                    <div class="trigger-row"><div class="tr-event">Geofencing = Yes</div><div class="tr-action">Set Geofencing flag in Event Tracker</div></div>
+                    <div class="trigger-row"><div class="tr-event">Speaking / Sponsorship = Yes</div><div class="tr-action">Create follow-up task in tracker</div></div>
+                    <div class="trigger-row"><div class="tr-event">Partnership = Yes</div><div class="tr-action">Alert Brittany via email</div></div>
+                    <div class="trigger-row"><div class="tr-event">Any submission</div><div class="tr-action">Update Event Tracker: Survey Received = Yes</div></div>
+                </div>
+            </div>
+
+            <div class="card-full">
+                <div class="card-title">All 13 Fields</div>
+                <div class="survey-grid">
+                    <div class="s-field"><div class="s-num">01</div><div><div class="s-name">BDM Name</div><div class="s-type">Dropdown &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">02</div><div><div class="s-name">Event Name</div><div class="s-type">Short text &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">03</div><div><div class="s-name">Event Date</div><div class="s-type">Date &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">04</div><div><div class="s-name">Association / Org</div><div class="s-type">Short text &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">05</div><div><div class="s-name">Overall Event Rating (1&ndash;5)</div><div class="s-type">Linear scale &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">06</div><div><div class="s-name">Would You Attend Again?</div><div class="s-type">Multiple choice &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">07</div><div><div class="s-name">Number of Contacts Made</div><div class="s-type">Short answer &middot; Required</div></div></div>
+                    <div class="s-field"><div class="s-num">08</div><div><div class="s-name">Business Card Photos</div><div class="s-type">Text &middot; Optional &middot; Email to Brittany</div></div></div>
+                    <div class="s-field"><div class="s-num">09</div><div><div class="s-name">Contact Names + Companies</div><div class="s-type">Paragraph &middot; Optional</div></div></div>
+                    <div class="s-field"><div class="s-num">10</div><div><div class="s-name">Speaking or Sponsorship Opportunity?</div><div class="s-type">Multiple choice &middot; Required &middot; Christene's ask</div></div></div>
+                    <div class="s-field"><div class="s-num">11</div><div><div class="s-name">Geofence This Association?</div><div class="s-type">Multiple choice &middot; Required &middot; Christene's ask</div></div></div>
+                    <div class="s-field"><div class="s-num">12</div><div><div class="s-name">Additional Partnership Opportunity?</div><div class="s-type">Multiple choice &middot; Required &middot; Christene's ask</div></div></div>
+                    <div class="s-field" style="grid-column:1/-1;"><div class="s-num">13</div><div><div class="s-name">Notes for Christene / Brittany</div><div class="s-type">Paragraph &middot; Optional</div></div></div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</div><!-- /dashboard -->
+
+<script>
+const MEMBERSHIPS = [
+    {name:"AGCMO (AGC Missouri Keystone)",type:"Membership",bdm:"Haley McHugh",status:"Active",decision:"Keep",poc:"Shannon Voss",notes:"Annual awards + monthly events. Education track."},
+    {name:"MBI",type:"Membership",bdm:"Haley McHugh",status:"Active",decision:"Keep",poc:"Jamie Friis",notes:"Quarterly. Andy Swanson also contact."},
+    {name:"ABC Tennessee",type:"Membership",bdm:"Alec Mattingly",status:"Active",decision:"Pending",poc:"Rachel Gorecki",notes:"Annual event + luncheons. Education track."},
+    {name:"ABC Carolinas",type:"Sponsorship",bdm:"Jason Sherrer",status:"Active",decision:"Pending",poc:"TBD",notes:"Multiple events per year. Sponsor level."},
+    {name:"ABC Baltimore",type:"Sponsorship",bdm:"Cari-Ellen Edgin",status:"Active",decision:"Pending",poc:"TBD",notes:"Maryland territory. Sponsor level."},
+    {name:"Indiana Subcontractors Assoc.",type:"Membership",bdm:"TBD",status:"Active",decision:"Pending",poc:"Pat Drewry",notes:"Education track. Indiana territory."},
+    {name:"AGC Kentucky",type:"Membership",bdm:"TBD",status:"Active",decision:"Pending",poc:"Ronnie Perkins",notes:"Kentucky territory."},
+    {name:"DBIA",type:"Sponsorship",bdm:"Multiple",status:"Active",decision:"Pending",poc:"TBD",notes:"Annual + regional. Multi-BDM benefit."},
+    {name:"SIBA",type:"Sponsorship",bdm:"Tyler Prazma",status:"Active",decision:"Pending",poc:"TBD",notes:"Nashville territory."},
+    {name:"FCA",type:"Sponsorship",bdm:"Multiple",status:"Active",decision:"Pending",poc:"TBD",notes:"Annual golf outing. Multi-BDM."},
+    {name:"CleanPower",type:"Event-Only",bdm:"Multiple",status:"Active",decision:"Pending",poc:"TBD",notes:"Annual conference only. No standing membership."},
+    {name:"ASA of Iowa",type:"Event-Only",bdm:"Haley McHugh",status:"Active",decision:"Pending",poc:"TBD",notes:"Annual event. Iowa / Missouri territory."},
+    {name:"ASA Midwest",type:"Event-Only",bdm:"Multiple",status:"Active",decision:"Pending",poc:"TBD",notes:"Recurring regional. Multi-BDM."},
+    {name:"AGC Colorado",type:"Event-Only",bdm:"TBD",status:"Active",decision:"Pending",poc:"TBD",notes:"Meet the GC format. Attendance only."},
+    {name:"AIA Indiana",type:"Event-Only",bdm:"TBD",status:"Active",decision:"Pending",poc:"TBD",notes:"Annual golf. Indiana territory."},
+];
+
+function renderMemberships() {
+    const map = {Membership:'b-member',Sponsorship:'b-sponsor','Event-Only':'b-event'};
+    document.getElementById('mem-tbody').innerHTML = MEMBERSHIPS.map(m =>
+        `<tr>
+            <td class="td-name">${m.name}</td>
+            <td><span class="badge ${map[m.type]}">${m.type}</span></td>
+            <td>${m.bdm}</td>
+            <td><span class="badge b-active">${m.status}</span></td>
+            <td><span class="badge ${m.decision==='Keep'?'b-keep':'b-pending'}">${m.decision}</span></td>
+            <td>${m.poc}</td>
+            <td style="font-size:12px;color:var(--text-dim);max-width:240px;">${m.notes}</td>
+        </tr>`
+    ).join('');
+}
+
+function doLogin() {
+    const u = document.getElementById('u').value.trim();
+    const p = document.getElementById('p').value.trim();
+    if (u === 'admin' && p === 'CNC_preview_26') {
+        document.getElementById('login-screen').classList.add('hidden');
+        const dash = document.getElementById('dashboard');
+        dash.style.display = 'flex';
+        dash.style.flexDirection = 'column';
+        renderMemberships();
+    } else {
+        document.getElementById('login-error').style.display = 'block';
+    }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+}
+</script>
+</body>
+</html>
