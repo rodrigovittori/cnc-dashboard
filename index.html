@@ -7,12 +7,14 @@
     <link rel="icon" type="image/png" href="https://cncfoundations.com/wp-content/uploads/2022/10/CNC-Foundations-Website-Logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g" crossorigin="anonymous"></script>
     <style>
         :root {
             --red: #C4242D;
             --red-light: #F9E6E7;
             --red-mid: #E8A0A3;
+            --red-dark: #a81e26;
             --dark: #352F31;
             --bg: #F0F0F1;
             --bg-card: #FFFFFF;
@@ -22,7 +24,12 @@
             --text: #1A1A1A;
             --text-secondary: #555555;
             --text-dim: #999999;
-            --filter-bg: #FFFFFF;
+            --green: #2E7D32;
+            --green-bg: #E8F5E9;
+            --amber: #B45309;
+            --amber-bg: #FEF3C7;
+            --blue: #1565C0;
+            --blue-bg: #E3F2FD;
             --heatmap-0: #FFFFFF;
             --heatmap-1: #FDECEA;
             --heatmap-2: #F5BBBE;
@@ -34,11 +41,13 @@
 
         body {
             font-family: 'Open Sans', sans-serif;
-            font-size: 15px;
+            font-size: 14px;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
         }
+
+        .mono { font-family: 'DM Mono', monospace; }
 
         /* ── LOGIN ─────────────────────────────────── */
         #login-screen {
@@ -61,335 +70,220 @@
         .login-header {
             background: var(--dark);
             padding: 32px 40px 28px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            display: flex; align-items: center; gap: 16px;
         }
         .login-logo-box {
             width: 48px; height: 48px;
             background: var(--red);
             display: flex; align-items: center; justify-content: center;
-            border-radius: 2px;
-            flex-shrink: 0;
+            border-radius: 2px; flex-shrink: 0;
         }
         .login-logo-box img { width: 36px; height: 36px; object-fit: contain; filter: brightness(0) invert(1); }
-        .login-header-text {}
-        .login-org {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 0.2em; text-transform: uppercase;
-            color: rgba(255,255,255,0.6); margin-bottom: 4px;
-        }
-        .login-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 18px; font-weight: 700; color: #fff;
-        }
+        .login-org { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+        .login-title { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 700; color: #fff; }
         .login-body { padding: 36px 40px; }
-        .login-label {
-            display: block;
-            font-size: 12px; font-weight: 600;
-            letter-spacing: 0.05em; text-transform: uppercase;
-            color: var(--text-secondary); margin-bottom: 6px;
-        }
+        .login-label { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; }
         .login-field { margin-bottom: 20px; }
-        .login-input {
-            width: 100%;
-            border: 1px solid var(--border); border-radius: 3px;
-            padding: 11px 14px;
-            font-family: 'Open Sans', sans-serif; font-size: 15px; color: var(--text);
-            background: #fff; outline: none;
-            transition: border-color 0.15s;
-        }
+        .login-input { width: 100%; border: 1px solid var(--border); border-radius: 3px; padding: 11px 14px; font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text); background: #fff; outline: none; transition: border-color 0.15s; }
         .login-input:focus { border-color: var(--red); }
-        .login-btn {
-            width: 100%; padding: 13px;
-            background: var(--red); border: none; border-radius: 3px;
-            color: #fff;
-            font-family: 'Montserrat', sans-serif; font-weight: 700;
-            font-size: 14px; letter-spacing: 0.05em;
-            cursor: pointer; transition: background 0.15s;
-            margin-top: 4px;
-        }
-        .login-btn:hover { background: #a81e26; }
+        .login-btn { width: 100%; padding: 13px; background: var(--red); border: none; border-radius: 3px; color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.05em; cursor: pointer; transition: background 0.15s; margin-top: 4px; }
+        .login-btn:hover { background: var(--red-dark); }
         .login-error { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
         .login-footer { text-align: center; padding: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
 
         /* ── APP SHELL ─────────────────────────────── */
-        #app { display: none; min-height: 100vh; }
-        #app.visible { display: flex; flex-direction: column; }
+        #app { display: none; min-height: 100vh; flex-direction: column; }
+        #app.visible { display: flex; }
 
-        /* Top bar */
         .topbar {
             height: 52px; background: var(--dark);
             display: flex; align-items: center; padding: 0 20px;
             gap: 14px; flex-shrink: 0; position: sticky; top: 0; z-index: 200;
         }
-        .topbar-logo {
-            width: 32px; height: 32px;
-            background: var(--red); border-radius: 2px;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
+        .topbar-logo { width: 32px; height: 32px; background: var(--red); border-radius: 2px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .topbar-logo img { width: 24px; filter: brightness(0) invert(1); }
-        .topbar-name {
-            font-family: 'Montserrat', sans-serif; font-weight: 700;
-            font-size: 15px; color: #fff; letter-spacing: 0.01em;
-        }
+        .topbar-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; color: #fff; }
         .topbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.2); }
-        .topbar-sub { font-size: 13px; color: rgba(255,255,255,0.55); }
-        .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-        .topbar-btn {
-            padding: 6px 16px; border-radius: 3px; font-size: 13px; font-weight: 600;
-            cursor: pointer; border: none; display: flex; align-items: center; gap: 6px;
-        }
-        .btn-reset { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-reset:hover { background: rgba(255,255,255,0.18); }
+        .topbar-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+        .topbar-refresh { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.4); margin-left: 6px; }
+        .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+        .topbar-btn { padding: 5px 14px; border-radius: 3px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
+        .btn-ghost { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.18); }
 
-        /* Body layout */
         .app-body { display: flex; flex: 1; min-height: 0; }
 
-        /* Sidebar */
+        /* ── SIDEBAR ─────────────────────────────── */
         .sidebar {
-            width: 240px; flex-shrink: 0;
+            width: 220px; flex-shrink: 0;
             background: var(--sidebar-bg);
             border-right: 1px solid var(--sidebar-border);
             overflow-y: auto;
-            transition: width 0.2s;
         }
-        .sidebar.collapsed { width: 0; overflow: hidden; }
-
-        .sidebar-section { padding: 12px 0; border-bottom: 1px solid var(--sidebar-border); }
-        .sidebar-section-label {
-            padding: 8px 18px 4px;
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            color: var(--text-dim);
-        }
-        .sidebar-item {
-            display: block; width: 100%;
-            padding: 10px 18px;
-            font-size: 14px; color: var(--text-secondary);
-            background: none; border: none; text-align: left;
-            cursor: pointer; transition: all 0.12s;
-            border-left: 3px solid transparent;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .sidebar-section { padding: 10px 0; border-bottom: 1px solid var(--sidebar-border); }
+        .sidebar-section-label { padding: 8px 16px 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+        .sidebar-item { display: block; width: 100%; padding: 9px 16px; font-size: 13px; color: var(--text-secondary); background: none; border: none; text-align: left; cursor: pointer; transition: all 0.12s; border-left: 3px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sidebar-item:hover { background: #EFEFEF; color: var(--text); }
-        .sidebar-item.active {
-            background: var(--red-light);
-            color: var(--red);
-            font-weight: 600;
-            border-left-color: var(--red);
-        }
+        .sidebar-item.active { background: var(--red-light); color: var(--red); font-weight: 600; border-left-color: var(--red); }
+        .sidebar-item.ext { color: var(--text-dim); font-size: 12px; }
 
-        .sidebar-toggle {
-            position: absolute; left: 240px; top: 52px;
-            width: 24px; height: 40px;
-            background: var(--sidebar-bg);
-            border: 1px solid var(--sidebar-border);
-            border-left: none;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 11px; color: var(--text-dim);
-            transition: left 0.2s;
-            z-index: 100;
-        }
-
-        /* Main content */
-        .main {
-            flex: 1; overflow-y: auto; overflow-x: hidden;
-            background: var(--bg);
-        }
-
-        .page { display: none; padding: 28px 32px; }
+        .main { flex: 1; overflow-y: auto; overflow-x: hidden; background: var(--bg); }
+        .page { display: none; padding: 24px 28px; }
         .page.active { display: block; }
 
-        .page-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 20px; font-weight: 700; color: var(--text);
-            margin-bottom: 24px;
-        }
+        /* ── TYPOGRAPHY ─────────────────────────────── */
+        .page-title { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        .page-title-badge { font-size: 11px; font-weight: 600; background: var(--red-light); color: var(--red); padding: 3px 10px; border-radius: 2px; letter-spacing: 0.04em; }
+        .card-title { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.06em; }
+        .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; }
 
-        /* Filters */
-        .filters {
-            display: flex; flex-wrap: wrap; gap: 10px;
-            margin-bottom: 28px;
-        }
-        .filter-pill {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 14px;
-            background: var(--filter-bg);
-            border: 1px solid var(--border); border-radius: 3px;
-            font-size: 14px; color: var(--text-secondary);
-            cursor: pointer; min-width: 160px;
-            justify-content: space-between;
-            user-select: none;
-        }
-        .filter-pill:hover { border-color: var(--red); color: var(--text); }
-        .filter-arrow { font-size: 10px; color: var(--text-dim); }
+        /* ── CARDS ─────────────────────────────── */
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; padding: 20px; margin-bottom: 16px; }
+        .card-sm { padding: 16px; }
 
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 3px;
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-        .card-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 16px; font-weight: 700; color: var(--text);
-            margin-bottom: 20px;
-        }
+        /* ── GRIDS ─────────────────────────────── */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
 
-        /* Grid layouts */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        /* ── KPI CARDS ─────────────────────────────── */
+        .kpi { background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; padding: 18px 20px; }
+        .kpi-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; }
+        .kpi-value { font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500; color: var(--text); line-height: 1; }
+        .kpi-value.red { color: var(--red); }
+        .kpi-value.green { color: var(--green); }
+        .kpi-sub { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+        .kpi-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; margin-top: 6px; padding: 2px 8px; border-radius: 2px; }
+        .delta-over { background: #FEE2E2; color: #991B1B; }
+        .delta-under { background: var(--green-bg); color: var(--green); }
 
-        /* Scorecard */
-        .scorecard {
-            background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: 3px;
-            padding: 24px 20px;
-            text-align: center;
-        }
-        .scorecard-label {
-            font-size: 12px; font-weight: 700;
-            letter-spacing: 0.08em; text-transform: uppercase;
-            color: var(--text-secondary); margin-bottom: 12px;
-        }
-        .scorecard-value {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 44px; font-weight: 800; color: var(--text);
-            line-height: 1;
-        }
-        .scorecard-value.red { color: var(--red); }
-        .scorecard-sub { font-size: 13px; color: var(--text-dim); margin-top: 8px; }
-
-        /* Tables */
+        /* ── TABLES ─────────────────────────────── */
         .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        thead th {
-            text-align: left; padding: 12px 14px;
-            font-size: 12px; font-weight: 700;
-            letter-spacing: 0.04em; text-transform: uppercase;
-            color: var(--text-secondary);
-            border-bottom: 2px solid var(--border);
-            background: #FAFAFA;
-            white-space: nowrap;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th { text-align: left; padding: 10px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); border-bottom: 2px solid var(--border); background: #FAFAFA; white-space: nowrap; }
         thead th.num { text-align: right; }
-        tbody td {
-            padding: 13px 14px;
-            border-bottom: 1px solid #F0F0F0;
-            color: var(--text-secondary);
-            vertical-align: middle;
-        }
+        tbody td { padding: 11px 12px; border-bottom: 1px solid #F0F0F0; color: var(--text-secondary); vertical-align: middle; }
         tbody td.name { color: var(--text); font-weight: 500; }
-        tbody td.num { text-align: right; font-weight: 600; color: var(--text); }
+        tbody td.num { text-align: right; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; color: var(--text); }
         tbody tr:hover td { background: #FAFAFA; }
         tbody tr:last-child td { border-bottom: none; }
+        .total-row td { font-weight: 700 !important; color: var(--text) !important; border-top: 2px solid var(--border); border-bottom: none !important; background: #FAFAFA !important; }
 
-        /* Heat map cells */
-        .hm-0 { background: var(--heatmap-0); }
+        /* ── BADGES ─────────────────────────────── */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap; }
+        .b-active   { background: var(--green-bg); color: var(--green); }
+        .b-building { background: var(--amber-bg); color: var(--amber); }
+        .b-light    { background: var(--blue-bg); color: var(--blue); }
+        .b-quiet    { background: #F5F5F5; color: #757575; }
+        .b-charged  { background: #E8F5E9; color: #2E7D32; }
+        .b-anticipated { background: var(--amber-bg); color: var(--amber); }
+        .b-member   { background: var(--blue-bg); color: var(--blue); }
+        .b-sponsor  { background: #F3E5F5; color: #6A1B9A; }
+
+        /* ── HEATMAP ─────────────────────────────── */
         .hm-1 { background: var(--heatmap-1); }
         .hm-2 { background: var(--heatmap-2); color: var(--text) !important; }
         .hm-3 { background: var(--heatmap-3); color: #fff !important; }
         .hm-4 { background: var(--heatmap-4); color: #fff !important; }
 
-        /* Grand total row */
-        .total-row td { font-weight: 700 !important; color: var(--text) !important; border-top: 2px solid var(--border); border-bottom: none; background: #FAFAFA; }
+        /* ── CHARTS ─────────────────────────────── */
+        .chart-wrap { position: relative; }
+        .chart-wrap canvas { display: block; }
 
-        /* Badges */
-        .badge {
-            display: inline-block; padding: 3px 10px; border-radius: 2px;
-            font-size: 12px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase;
-        }
-        .b-active   { background: #E8F5E9; color: #2E7D32; }
-        .b-conf     { background: #E3F2FD; color: #1565C0; }
-        .b-id       { background: #FFF8E1; color: #F57F17; }
-        .b-pending  { background: #F5F5F5; color: #757575; }
-        .b-keep     { background: #E8F5E9; color: #2E7D32; }
-        .b-member   { background: #E3F2FD; color: #1565C0; }
-        .b-sponsor  { background: #F3E5F5; color: #6A1B9A; }
-        .b-event    { background: #FFF8E1; color: #F57F17; }
-
-        /* Donut chart */
-        .donut-wrap { display: flex; align-items: center; gap: 32px; padding: 8px 0; }
-        .donut {
-            width: 140px; height: 140px; flex-shrink: 0;
-            border-radius: 50%;
-            background: conic-gradient(
-                #C4242D 0% 75.4%,
-                #E97A7F 75.4% 83.3%,
-                #F5BBBE 83.3% 90.5%,
-                #FDECEA 90.5% 94%,
-                #E2E2E2 94% 100%
-            );
+        /* ── BDM STATUS BOARD ─────────────────── */
+        .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+        .status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-top: 3px solid var(--border);
             position: relative;
         }
-        .donut::after {
-            content: '';
-            position: absolute; inset: 30px;
-            background: #fff; border-radius: 50%;
+        .status-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-1px); }
+        .status-card.s-active  { border-top-color: var(--green); }
+        .status-card.s-building{ border-top-color: #D97706; }
+        .status-card.s-light   { border-top-color: var(--blue); }
+        .status-card.s-quiet   { border-top-color: #D0D0D0; }
+        .sc-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--dark); display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: 0.04em; }
+        .sc-name { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; line-height: 1.2; }
+        .sc-territory { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
+        .sc-stats { display: flex; gap: 12px; margin-bottom: 10px; }
+        .sc-stat { text-align: center; }
+        .sc-stat-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--text); line-height: 1; }
+        .sc-stat-lbl { font-size: 10px; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.04em; text-transform: uppercase; }
+        .sc-stat-divider { width: 1px; background: var(--border); }
+        .sc-footer { display: flex; justify-content: space-between; align-items: center; }
+        .sc-drill { font-size: 11px; color: var(--text-dim); text-decoration: none; }
+        .status-card:hover .sc-drill { color: var(--red); }
+
+        /* ── BDM DRILLDOWN ─────────────────────── */
+        .bdm-tiles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .bdm-tile {
+            padding: 6px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px; font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.12s;
+            white-space: nowrap;
         }
-        .donut-legend { flex: 1; }
-        .legend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; }
-        .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-        .legend-label { flex: 1; color: var(--text); }
-        .legend-pct { font-weight: 600; color: var(--text); width: 40px; text-align: right; }
+        .bdm-tile:hover { border-color: var(--red); color: var(--red); }
+        .bdm-tile.selected { background: var(--red); color: #fff; border-color: var(--red); }
 
-        /* Bar chart */
-        .bar-chart { display: flex; flex-direction: column; gap: 14px; }
-        .bar-row { display: flex; align-items: center; gap: 12px; }
-        .bar-label { font-size: 14px; color: var(--text-secondary); width: 140px; flex-shrink: 0; text-align: right; }
-        .bar-track { flex: 1; height: 8px; background: #F0F0F0; border-radius: 4px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--red); border-radius: 4px; }
-        .bar-fill.f2 { background: #E97A7F; }
-        .bar-fill.f3 { background: #F5BBBE; }
-        .bar-num { font-size: 14px; font-weight: 700; color: var(--text); width: 28px; }
+        .drilldown-header { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .drilldown-name { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); }
+        .drilldown-territory { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
 
-        /* Survey fields */
-        .survey-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .s-row {
-            display: flex; align-items: flex-start; gap: 14px;
-            padding: 14px 16px;
-            background: #FAFAFA; border: 1px solid var(--border); border-radius: 3px;
-        }
-        .s-num { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 20px; color: var(--red); width: 28px; flex-shrink: 0; line-height: 1.2; }
-        .s-name { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 3px; }
-        .s-type { font-size: 12px; color: var(--text-dim); }
+        .drilldown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .drilldown-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; padding: 20px; }
 
-        /* Trigger list */
+        .mini-list { display: flex; flex-direction: column; gap: 6px; }
+        .mini-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #FAFAFA; border-radius: 2px; font-size: 12px; }
+        .mini-row-name { color: var(--text); font-weight: 500; flex: 1; margin-right: 8px; }
+        .mini-row-meta { color: var(--text-dim); font-size: 11px; margin-right: 8px; }
+        .mini-row-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); font-weight: 500; white-space: nowrap; }
+        .no-data { font-size: 13px; color: var(--text-dim); text-align: center; padding: 24px; }
+
+        /* ── EXPENSE BARS (CSS-only fallback) ──── */
+        .exp-bar-list { display: flex; flex-direction: column; gap: 8px; }
+        .exp-bar-row { display: flex; align-items: center; gap: 10px; }
+        .exp-bar-label { font-size: 12px; color: var(--text-secondary); width: 160px; flex-shrink: 0; text-align: right; }
+        .exp-bar-track { flex: 1; height: 8px; background: #F0F0F0; border-radius: 4px; overflow: hidden; }
+        .exp-bar-fill { height: 100%; background: var(--red); border-radius: 4px; transition: width 0.5s ease; }
+        .exp-bar-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); font-weight: 500; white-space: nowrap; width: 70px; }
+
+        /* ── SURVEY ─────────────────────────────── */
+        .survey-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .s-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: #FAFAFA; border: 1px solid var(--border); border-radius: 3px; }
+        .s-num { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 18px; color: var(--red); width: 28px; flex-shrink: 0; line-height: 1.2; }
+        .s-name { font-weight: 600; font-size: 13px; color: var(--text); margin-bottom: 2px; }
+        .s-type { font-size: 11px; color: var(--text-dim); }
         .trigger-list { border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
         .trigger-row { display: flex; border-bottom: 1px solid var(--border); }
         .trigger-row:last-child { border-bottom: none; }
-        .tr-if { padding: 13px 16px; width: 260px; flex-shrink: 0; font-weight: 600; font-size: 14px; color: var(--text); background: #FAFAFA; border-right: 1px solid var(--border); }
-        .tr-then { padding: 13px 16px; flex: 1; font-size: 14px; color: var(--text-secondary); }
+        .tr-if { padding: 11px 14px; width: 240px; flex-shrink: 0; font-weight: 600; font-size: 12px; color: var(--text); background: #FAFAFA; border-right: 1px solid var(--border); }
+        .tr-then { padding: 11px 14px; flex: 1; font-size: 12px; color: var(--text-secondary); }
 
-        /* Pipeline */
-        .pipeline-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
-        .pip-cell { text-align: center; padding: 16px 8px; background: #FAFAFA; border: 1px solid var(--border); border-radius: 3px; }
-        .pip-mon { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
-        .pip-val { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 26px; color: var(--text); }
+        .cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--red); color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px; border: none; border-radius: 3px; cursor: pointer; text-decoration: none; transition: background 0.15s; }
+        .cta-btn:hover { background: var(--red-dark); }
+
+        .data-footer { font-size: 11px; color: var(--text-dim); margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+        /* ── PIPELINE ─────────────────────────── */
+        .pipeline-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px; }
+        .pip-cell { text-align: center; padding: 12px 6px; background: #FAFAFA; border: 1px solid var(--border); border-radius: 3px; }
+        .pip-mon { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+        .pip-val { font-family: 'DM Mono', monospace; font-weight: 500; font-size: 20px; color: var(--text); }
         .pip-val.live { color: var(--red); }
 
-        /* Scorecards row */
-        .scorecard-row { display: flex; gap: 40px; justify-content: center; padding: 28px 0 8px; }
-        .sc-big { text-align: center; }
-        .sc-big-label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; }
-        .sc-big-val { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 52px; color: var(--text); line-height: 1; }
-
-        /* Data footer */
-        .data-footer { font-size: 12px; color: var(--text-dim); margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
-
-        /* CTA button */
-        .cta-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 24px; background: var(--red); color: #fff;
-            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 14px;
-            border: none; border-radius: 3px; cursor: pointer; text-decoration: none;
-            transition: background 0.15s;
-        }
-        .cta-btn:hover { background: #a81e26; }
+        /* ── MEMBERSHIP BUDGET ROW ──────────────── */
+        td.over  { color: #991B1B !important; }
+        td.under { color: var(--green) !important; }
     </style>
 </head>
 <body>
@@ -401,7 +295,7 @@
             <div class="login-logo-box">
                 <img src="https://cncfoundations.com/wp-content/uploads/2022/10/CNC-Foundations-Website-Logo.png" alt="CNC" onerror="this.style.display='none'">
             </div>
-            <div class="login-header-text">
+            <div>
                 <div class="login-org">The Knowing Agency</div>
                 <div class="login-title">CNC Dashboard</div>
             </div>
@@ -418,248 +312,294 @@
             <button class="login-btn" onclick="doLogin()">Sign In</button>
             <div class="login-error" id="login-error">Invalid credentials. Please try again.</div>
         </div>
-        <div class="login-footer">Internal preview &nbsp;&middot;&nbsp; Jun 4, 2026 Meeting</div>
+        <div class="login-footer">Internal preview &middot; Jun 4, 2026 Meeting</div>
     </div>
 </div>
 
 <!-- ── APP ────────────────────────────────────────────────── -->
 <div id="app">
-    <!-- Topbar -->
     <div class="topbar">
         <div class="topbar-logo">
             <img src="https://cncfoundations.com/wp-content/uploads/2022/10/CNC-Foundations-Website-Logo.png" alt="CNC" onerror="this.style.display='none'">
         </div>
-        <span class="topbar-name">CNC Dashboard</span>
+        <span class="topbar-name" style="font-family:'Montserrat',sans-serif;">CNC Dashboard</span>
         <div class="topbar-sep"></div>
         <span class="topbar-sub">The Knowing Agency</span>
+        <span class="topbar-refresh" id="topbar-refresh"></span>
         <div class="topbar-actions">
-            <button class="topbar-btn btn-reset" onclick="resetFilters()">↺ Reset</button>
+            <button class="topbar-btn btn-ghost" onclick="showPage('drilldown', null, 'shawn')">BDM View</button>
+            <button class="topbar-btn btn-ghost" onclick="showPage('status', null)">Status Board</button>
         </div>
     </div>
 
-    <div class="app-body" style="position:relative;">
-        <!-- Sidebar -->
+    <div class="app-body">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-section">
-                <div class="sidebar-section-label">Automation Tools</div>
-                <button class="sidebar-item active" onclick="showPage('overview', this)">Overview</button>
-                <button class="sidebar-item" onclick="showPage('events', this)">Events Tracker</button>
-                <button class="sidebar-item" onclick="showPage('memberships', this)">Memberships</button>
-                <button class="sidebar-item" onclick="showPage('survey', this)">Post-Event Survey</button>
+                <div class="sidebar-section-label">Overview</div>
+                <button class="sidebar-item active" id="nav-expense" onclick="showPage('expense', this)">Expense Overview</button>
+                <button class="sidebar-item" id="nav-status"  onclick="showPage('status', this)">BDM Status Board</button>
+                <button class="sidebar-item" id="nav-drilldown" onclick="showPage('drilldown', this)">BDM Drilldown</button>
             </div>
             <div class="sidebar-section">
-                <div class="sidebar-section-label">Google Sheets</div>
-                <button class="sidebar-item" onclick="window.open('https://docs.google.com/spreadsheets/d/17edvipl3HGNqhxxnP5cfV2HdsiMl3tduuahyZL38URs/edit','_blank')">↗ Event Tracker</button>
-                <button class="sidebar-item" onclick="window.open('https://docs.google.com/spreadsheets/d/11Uoo0y0rG9mObSmzHFrI7bMqzBfu34TU8Hw6kZ-I5Zs/edit','_blank')">↗ Membership Tracker</button>
-                <button class="sidebar-item" onclick="window.open('https://docs.google.com/spreadsheets/d/1V9TN-7mW617G6MvjDR4YXzTbAqr_HJrcWAL1ShdR0sE/edit','_blank')">↗ Association List</button>
+                <div class="sidebar-section-label">Trackers</div>
+                <button class="sidebar-item" id="nav-events"      onclick="showPage('events', this)">Events Tracker</button>
+                <button class="sidebar-item" id="nav-memberships" onclick="showPage('memberships', this)">Memberships</button>
+                <button class="sidebar-item" id="nav-survey"      onclick="showPage('survey', this)">Post-Event Survey</button>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">Source Files</div>
+                <button class="sidebar-item ext" onclick="window.open('https://docs.google.com/spreadsheets/d/1iVrq8je5yf1q0_jrqUCtbWIv7UekEzPZsVSoLz24thQ/edit','_blank')">↗ 2026 BDM Tracker</button>
+                <button class="sidebar-item ext" onclick="window.open('https://docs.google.com/spreadsheets/d/18haHWoecqRSBo_ga3jQtW9N6xS1urEMoU_s0yykXqQg/edit','_blank')">↗ 2025 BDM Report</button>
             </div>
         </div>
 
-        <!-- Main -->
-        <div class="main" id="main">
+        <div class="main">
 
-            <!-- OVERVIEW -->
-            <div class="page active" id="page-overview">
-                <div class="page-title">Overview</div>
-
-                <div class="filters">
-                    <div class="filter-pill">BDM <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Territory <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Event Type <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Status <span class="filter-arrow">▾</span></div>
+            <!-- ══ PAGE: EXPENSE OVERVIEW ══════════════════════════ -->
+            <div class="page active" id="page-expense">
+                <div class="page-title">
+                    Expense Overview
+                    <span class="page-title-badge">2026 YTD</span>
                 </div>
 
                 <div class="grid-4">
-                    <div class="scorecard">
-                        <div class="scorecard-label">Events Tracked</div>
-                        <div class="scorecard-value" id="kpi-events">…</div>
-                        <div class="scorecard-sub">2026 season</div>
+                    <div class="kpi">
+                        <div class="kpi-label">2026 Memberships</div>
+                        <div class="kpi-value">$19,297</div>
+                        <div class="kpi-delta delta-over">▲ $2,352 over budget</div>
                     </div>
-                    <div class="scorecard">
-                        <div class="scorecard-label">Active Memberships</div>
-                        <div class="scorecard-value" id="kpi-members">…</div>
-                        <div class="scorecard-sub">9 territories</div>
+                    <div class="kpi">
+                        <div class="kpi-label">2026 Sponsorships</div>
+                        <div class="kpi-value">$14,964</div>
+                        <div class="kpi-delta delta-over">▲ $1,016 over budget</div>
                     </div>
-                    <div class="scorecard">
-                        <div class="scorecard-label">BDMs Active</div>
-                        <div class="scorecard-value" id="kpi-bdms">…</div>
-                        <div class="scorecard-sub">Pilot: Haley McHugh</div>
+                    <div class="kpi">
+                        <div class="kpi-label">2026 Combined Spend</div>
+                        <div class="kpi-value red">$34,261</div>
+                        <div class="kpi-delta delta-over">▲ $3,368 over budget</div>
                     </div>
-                    <div class="scorecard">
-                        <div class="scorecard-label">Survey Responses</div>
-                        <div class="scorecard-value red" id="kpi-responses">…</div>
-                        <div class="scorecard-sub">Live from Google Forms</div>
+                    <div class="kpi">
+                        <div class="kpi-label">Events Attended</div>
+                        <div class="kpi-value">30</div>
+                        <div class="kpi-sub">Jan – Jun 2026</div>
                     </div>
                 </div>
 
                 <div class="grid-2">
                     <div class="card">
-                        <div class="card-title">Events by Status</div>
-                        <div class="bar-chart">
-                            <div class="bar-row"><div class="bar-label">Identified</div><div class="bar-track"><div class="bar-fill" style="width:67%"></div></div><div class="bar-num">2</div></div>
-                            <div class="bar-row"><div class="bar-label">Confirmed</div><div class="bar-track"><div class="bar-fill f2" style="width:33%"></div></div><div class="bar-num">1</div></div>
-                            <div class="bar-row"><div class="bar-label">Registered</div><div class="bar-track"><div class="bar-fill f3" style="width:0%"></div></div><div class="bar-num">0</div></div>
-                            <div class="bar-row"><div class="bar-label">Complete</div><div class="bar-track"><div class="bar-fill f3" style="width:0%"></div></div><div class="bar-num">0</div></div>
-                        </div>
+                        <div class="card-title">2026 Monthly Charges — Memberships + Sponsorships</div>
+                        <div class="chart-wrap"><canvas id="chart-monthly2026" height="220"></canvas></div>
                     </div>
                     <div class="card">
-                        <div class="card-title">Memberships by Type</div>
-                        <div class="donut-wrap">
-                            <div class="donut"></div>
-                            <div class="donut-legend">
-                                <div class="legend-row"><div class="legend-dot" style="background:#C4242D"></div><div class="legend-label">Membership</div><div class="legend-pct">47%</div></div>
-                                <div class="legend-row"><div class="legend-dot" style="background:#E97A7F"></div><div class="legend-label">Sponsorship</div><div class="legend-pct">33%</div></div>
-                                <div class="legend-row"><div class="legend-dot" style="background:#F5BBBE"></div><div class="legend-label">Event-Only</div><div class="legend-pct">20%</div></div>
-                            </div>
-                        </div>
-                        <div class="scorecard-row">
-                            <div class="sc-big"><div class="sc-big-label">Total Associations</div><div class="sc-big-val">15</div></div>
-                            <div class="sc-big"><div class="sc-big-label">Pending Decision</div><div class="sc-big-val">13</div></div>
-                        </div>
+                        <div class="card-title">2025 Full-Year Advertising — Budget vs Actual</div>
+                        <div class="chart-wrap"><canvas id="chart-hist2025" height="220"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title">2026 Spend by BDM</div>
+                        <div class="chart-wrap"><canvas id="chart-bdm2026" height="280"></canvas></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">2025 Advertising by Category</div>
+                        <div id="cat-bars" class="exp-bar-list"></div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">Upcoming Events</div>
+                    <div class="card-title">2026 BDM Spend Detail</div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Event Name</th>
-                                    <th>Association</th>
-                                    <th>Date</th>
-                                    <th>Territory</th>
                                     <th>BDM</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th class="num">Reg. Cost</th>
-                                    <th class="num">Sponsor Amt</th>
+                                    <th>Territory</th>
+                                    <th class="num">Memberships</th>
+                                    <th class="num">Sponsorships</th>
+                                    <th class="num">Total 2026</th>
+                                    <th class="num">Events</th>
                                 </tr>
                             </thead>
-                            <tbody id="overview-events-tbody">
-                                <tr><td colspan="9" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
-                            </tbody>
+                            <tbody id="expense-bdm-tbody"></tbody>
                         </table>
                     </div>
                 </div>
-                <div class="data-footer">Data Last Updated: Jun 1, 2026 &nbsp;&middot;&nbsp; Preview build for Jun 4, 2026 meeting &nbsp;&middot;&nbsp; The Knowing Agency</div>
+                <div class="data-footer" id="footer-expense"></div>
             </div>
 
-            <!-- EVENTS -->
+            <!-- ══ PAGE: BDM STATUS BOARD ══════════════════════════ -->
+            <div class="page" id="page-status">
+                <div class="page-title">
+                    BDM Status Board
+                    <span class="page-title-badge">2026 Activity</span>
+                </div>
+                <div class="status-grid" id="status-grid"></div>
+                <div class="card" style="margin-top:0;">
+                    <div class="card-title">Activity Legend</div>
+                    <div style="display:flex;gap:24px;flex-wrap:wrap;">
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:var(--green);border-radius:2px;"></div><strong>Active</strong> — 5+ events attended</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:#D97706;border-radius:2px;"></div><strong>Building</strong> — 2–4 events</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:var(--blue);border-radius:2px;"></div><strong>Light</strong> — 1 event</div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:#D0D0D0;border-radius:2px;"></div><strong>Quiet</strong> — no events tracked</div>
+                    </div>
+                </div>
+                <div class="data-footer" id="footer-status"></div>
+            </div>
+
+            <!-- ══ PAGE: BDM DRILLDOWN ══════════════════════════════ -->
+            <div class="page" id="page-drilldown">
+                <div class="page-title">BDM Drilldown</div>
+                <div class="bdm-tiles" id="bdm-tiles"></div>
+                <div id="drilldown-body">
+                    <div class="drilldown-header" id="dd-header"></div>
+                    <div class="grid-4" id="dd-kpis"></div>
+                    <div class="drilldown-grid" id="dd-panels"></div>
+                </div>
+                <div class="data-footer" id="footer-drilldown"></div>
+            </div>
+
+            <!-- ══ PAGE: EVENTS TRACKER ═════════════════════════════ -->
             <div class="page" id="page-events">
-                <div class="page-title">Events Tracker — 2026</div>
-                <div class="filters">
-                    <div class="filter-pill">BDM <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Territory <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Event Type <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Status <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Geofencing? <span class="filter-arrow">▾</span></div>
+                <div class="page-title">
+                    Events Tracker
+                    <span class="page-title-badge">30 Events · Jan–Jun 2026</span>
                 </div>
                 <div class="card">
-                    <div class="card-title">All Events — 21 Fields Tracked</div>
+                    <div class="card-title">All 2026 Events — BDM Field Activity</div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Event Name</th><th>Association</th><th>Type</th><th>Date</th>
-                                    <th>Territory</th><th>BDM</th><th>Status</th>
-                                    <th class="num">Reg. Cost</th><th class="num">Sponsor $</th>
-                                    <th>Geofencing?</th><th>Pre-Social?</th><th>Survey Sent?</th>
-                                    <th class="num">Contacts</th><th class="num">Rating</th><th>Attend Again?</th>
+                                    <th>Date</th>
+                                    <th>Event Name</th>
+                                    <th>BDM</th>
+                                    <th>Organization</th>
+                                    <th>Month</th>
                                 </tr>
                             </thead>
-                            <tbody id="events-tbody">
-                                <tr><td colspan="15" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
-                            </tbody>
+                            <tbody id="events-tbody"></tbody>
                         </table>
                     </div>
-                    <p style="font-size:13px;color:var(--text-dim);margin-top:16px;">Full 21-column tracker with dropdowns and BDM references lives in Google Sheets. This view shows key columns.</p>
                 </div>
-                <div class="data-footer">Data Last Updated: Jun 1, 2026 &nbsp;&middot;&nbsp; The Knowing Agency</div>
+                <div class="data-footer" id="footer-events"></div>
             </div>
 
-            <!-- MEMBERSHIPS -->
+            <!-- ══ PAGE: MEMBERSHIPS ════════════════════════════════ -->
             <div class="page" id="page-memberships">
-                <div class="page-title">Membership Tracker</div>
-                <div class="filters">
-                    <div class="filter-pill">BDM <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Type <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Status <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Decision <span class="filter-arrow">▾</span></div>
-                    <div class="filter-pill">Renewal Month <span class="filter-arrow">▾</span></div>
+                <div class="page-title">
+                    Membership Tracker
+                    <span class="page-title-badge">2026</span>
                 </div>
 
-                <div class="grid-2">
-                    <div class="card">
-                        <div class="card-title">By BDM</div>
-                        <div class="table-wrap">
-                            <table>
-                                <thead><tr><th>BDM</th><th class="num">Assoc.</th><th class="num">Keep</th><th class="num">Pending</th></tr></thead>
-                                <tbody id="bdm-tbody">
-                                    <tr><td colspan="4" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="grid-4">
+                    <div class="kpi">
+                        <div class="kpi-label">Total Charged</div>
+                        <div class="kpi-value mono">$19,297</div>
+                        <div class="kpi-sub">Through Apr 2026</div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">Renewal Pipeline</div>
-                        <div class="pipeline-grid">
-                            <div class="pip-cell"><div class="pip-mon">Jan</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Feb</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Mar</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Apr</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">May</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Jun</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Jul</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Aug</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Sep</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Oct</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Nov</div><div class="pip-val">0</div></div>
-                            <div class="pip-cell"><div class="pip-mon">Dec</div><div class="pip-val">0</div></div>
-                        </div>
-                        <p style="font-size:13px;color:var(--text-dim);margin-top:14px;">Renewal months populate as dates are added to the tracker.</p>
+                    <div class="kpi">
+                        <div class="kpi-label">Budgeted</div>
+                        <div class="kpi-value mono">$16,945</div>
+                        <div class="kpi-sub">Full year 2026</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-label">Variance</div>
+                        <div class="kpi-value red mono">–$1,362</div>
+                        <div class="kpi-delta delta-over">8% over budget</div>
+                    </div>
+                    <div class="kpi">
+                        <div class="kpi-label">Anticipated EOY</div>
+                        <div class="kpi-value mono">$2,590</div>
+                        <div class="kpi-sub">3 memberships pending</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">All 15 Associations</div>
+                    <div class="card-title">Renewal Pipeline — Charges by Month</div>
+                    <div class="pipeline-grid" id="mem-pipeline"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">All 2026 Memberships</div>
                     <div class="table-wrap">
                         <table>
-                            <thead><tr><th>Association</th><th>Type</th><th>BDM</th><th>Status</th><th>Decision</th><th>POC</th><th>Notes</th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th>Association</th>
+                                    <th>BDM</th>
+                                    <th class="num">Annual Cost</th>
+                                    <th>Renewal Month</th>
+                                    <th>Status</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
                             <tbody id="mem-tbody"></tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="2">Grand Total</td>
+                                    <td class="num">$19,297</td>
+                                    <td colspan="3">Budget: $16,945 · Variance: –$1,362</td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
-                <div class="data-footer">Data Last Updated: Jun 1, 2026 &nbsp;&middot;&nbsp; The Knowing Agency</div>
+
+                <div class="card">
+                    <div class="card-title">Sponsorships 2026 — $14,964 Actual vs $13,948 Budgeted</div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Association / Event</th>
+                                    <th>BDM</th>
+                                    <th class="num">Amount</th>
+                                    <th>Month</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sponsor-tbody"></tbody>
+                            <tfoot>
+                                <tr class="total-row">
+                                    <td colspan="2">Grand Total</td>
+                                    <td class="num">$14,964</td>
+                                    <td colspan="2">Budget: $13,948 · Variance: –$1,016</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="data-footer" id="footer-memberships"></div>
             </div>
 
-            <!-- SURVEY -->
+            <!-- ══ PAGE: SURVEY ═════════════════════════════════════ -->
             <div class="page" id="page-survey">
                 <div class="page-title">Post-Event Survey</div>
                 <div class="grid-2">
                     <div class="card">
                         <div class="card-title">Form Overview</div>
-                        <p style="font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;">
-                            13-field survey filled by BDMs within 24 hours of each event. Replaces Mike's informal phone calls and photo sends. Triggers the 6-week follow-up sequence automatically.
+                        <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;">
+                            13-field survey filled by BDMs within 24 hours of each event. Replaces informal phone calls. Triggers the post-event follow-up sequence automatically via n8n.
                         </p>
-                        <div style="display:flex;gap:12px;margin-bottom:24px;">
-                            <div style="text-align:center;flex:1;padding:18px;background:#FAFAFA;border:1px solid var(--border);border-radius:3px;">
-                                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:32px;color:var(--red);">13</div>
-                                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Fields</div>
+                        <div style="display:flex;gap:10px;margin-bottom:20px;">
+                            <div style="text-align:center;flex:1;padding:16px;background:#FAFAFA;border:1px solid var(--border);border-radius:3px;">
+                                <div style="font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--red);">13</div>
+                                <div style="font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Fields</div>
                             </div>
-                            <div style="text-align:center;flex:1;padding:18px;background:#FAFAFA;border:1px solid var(--border);border-radius:3px;">
-                                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:32px;color:var(--red);">5</div>
-                                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Sections</div>
+                            <div style="text-align:center;flex:1;padding:16px;background:#FAFAFA;border:1px solid var(--border);border-radius:3px;">
+                                <div style="font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--red);">5</div>
+                                <div style="font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Sections</div>
                             </div>
-                            <div style="text-align:center;flex:1;padding:18px;background:#FAFAFA;border:1px solid var(--border);border-radius:3px;">
-                                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:32px;color:var(--red);">5</div>
-                                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Auto-Triggers</div>
+                            <div style="text-align:center;flex:1;padding:16px;background:#FAFAFA;border:1px solid var(--border);border-radius:3px;">
+                                <div style="font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--red);">5</div>
+                                <div style="font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Auto-Triggers</div>
                             </div>
                         </div>
-                        <a class="cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform" target="_blank">Open Google Form &rarr;</a>
+                        <a class="cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform" target="_blank">Open Google Form →</a>
                     </div>
                     <div class="card">
-                        <div class="card-title">Automation Triggers (n8n)</div>
+                        <div class="card-title">Automation Triggers (n8n — Planned)</div>
                         <div class="trigger-list">
                             <div class="trigger-row"><div class="tr-if">Rating ≥ 4 + Attend Again = Yes</div><div class="tr-then">Flag event for next-year planning</div></div>
                             <div class="trigger-row"><div class="tr-if">Geofencing = Yes</div><div class="tr-then">Set Geofencing flag in Event Tracker</div></div>
@@ -669,41 +609,29 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="card">
                     <div class="card-title">All 13 Fields</div>
                     <div class="survey-grid">
-                        <div class="s-row"><div class="s-num">01</div><div><div class="s-name">BDM Name</div><div class="s-type">Dropdown &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">02</div><div><div class="s-name">Event Name</div><div class="s-type">Short text &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">03</div><div><div class="s-name">Event Date</div><div class="s-type">Date &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">04</div><div><div class="s-name">Association / Org</div><div class="s-type">Short text &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">05</div><div><div class="s-name">Overall Event Rating (1–5)</div><div class="s-type">Linear scale &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">06</div><div><div class="s-name">Would You Attend Again?</div><div class="s-type">Multiple choice &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">07</div><div><div class="s-name">Number of Contacts Made</div><div class="s-type">Short answer &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">08</div><div><div class="s-name">Business Card Photos</div><div class="s-type">Text &middot; Optional &middot; Email to marketing team</div></div></div>
-                        <div class="s-row"><div class="s-num">09</div><div><div class="s-name">Contact Names + Companies</div><div class="s-type">Paragraph &middot; Optional</div></div></div>
-                        <div class="s-row"><div class="s-num">10</div><div><div class="s-name">Speaking or Sponsorship Opportunity?</div><div class="s-type">Multiple choice &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">11</div><div><div class="s-name">Geofence This Association?</div><div class="s-type">Multiple choice &middot; Required</div></div></div>
-                        <div class="s-row"><div class="s-num">12</div><div><div class="s-name">Additional Partnership Opportunity?</div><div class="s-type">Multiple choice &middot; Required</div></div></div>
-                        <div class="s-row" style="grid-column:1/-1;"><div class="s-num">13</div><div><div class="s-name">Additional Notes</div><div class="s-type">Paragraph &middot; Optional</div></div></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Recent Submissions</div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead><tr><th>Timestamp</th><th>BDM</th><th>Event</th><th>Association</th><th class="num">Rating</th><th>Attend Again?</th><th class="num">Contacts</th><th>Geofence?</th></tr></thead>
-                            <tbody id="responses-tbody">
-                                <tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:20px;">Loading…</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="s-row"><div class="s-num">01</div><div><div class="s-name">BDM Name</div><div class="s-type">Dropdown · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">02</div><div><div class="s-name">Event Name</div><div class="s-type">Short text · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">03</div><div><div class="s-name">Event Date</div><div class="s-type">Date · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">04</div><div><div class="s-name">Association / Org</div><div class="s-type">Short text · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">05</div><div><div class="s-name">Overall Event Rating (1–5)</div><div class="s-type">Linear scale · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">06</div><div><div class="s-name">Would You Attend Again?</div><div class="s-type">Multiple choice · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">07</div><div><div class="s-name">Number of Contacts Made</div><div class="s-type">Short answer · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">08</div><div><div class="s-name">Business Card Photos</div><div class="s-type">Text · Optional</div></div></div>
+                        <div class="s-row"><div class="s-num">09</div><div><div class="s-name">Contact Names + Companies</div><div class="s-type">Paragraph · Optional</div></div></div>
+                        <div class="s-row"><div class="s-num">10</div><div><div class="s-name">Speaking or Sponsorship Opportunity?</div><div class="s-type">Multiple choice · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">11</div><div><div class="s-name">Geofence This Association?</div><div class="s-type">Multiple choice · Required</div></div></div>
+                        <div class="s-row"><div class="s-num">12</div><div><div class="s-name">Additional Partnership Opportunity?</div><div class="s-type">Multiple choice · Required</div></div></div>
+                        <div class="s-row" style="grid-column:1/-1;"><div class="s-num">13</div><div><div class="s-name">Additional Notes</div><div class="s-type">Paragraph · Optional</div></div></div>
                     </div>
                 </div>
                 <div class="card" style="margin-top:0;">
                     <div class="card-title">Live Form Preview</div>
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform?embedded=true" width="100%" height="900" frameborder="0" marginheight="0" marginwidth="0" style="border:1px solid var(--border);border-radius:3px;">Loading…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform?embedded=true" width="100%" height="820" frameborder="0" style="border:1px solid var(--border);border-radius:3px;display:block;">Loading…</iframe>
                 </div>
-                <div class="data-footer">Data Last Updated: Jun 1, 2026 &nbsp;&middot;&nbsp; The Knowing Agency</div>
+                <div class="data-footer">Data as of Jun 2, 2026 · The Knowing Agency</div>
             </div>
 
         </div><!-- /main -->
@@ -711,242 +639,645 @@
 </div><!-- /app -->
 
 <script>
-// ── XSS protection ───────────────────────────────────────
-function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
-        {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
-    ));
-}
+// ═══════════════════════════════════════════════════════════════════
+// DATA LAYER — refreshed Jun 2, 2026 via Drive MCP
+// To refresh: ask Claude to re-read the Drive files and regenerate
+// Future: replace with Google Apps Script endpoint (TKA accounts only)
+// ═══════════════════════════════════════════════════════════════════
+const DATA_REFRESHED = 'Jun 2, 2026';
 
-// ── Sheet IDs ─────────────────────────────────────────────
-const SHEETS = {
-    events:      { id: '17edvipl3HGNqhxxnP5cfV2HdsiMl3tduuahyZL38URs', tab: 'Event Tracker' },
-    memberships: { id: '11Uoo0y0rG9mObSmzHFrI7bMqzBfu34TU8Hw6kZ-I5Zs', tab: 'Membership Tracker' },
-    responses:   { id: '1TCGl8X4P2zdq72bGW8nFZcvudgwKpy1w4iP2Pv-jd9I', tab: 'Form Responses 1' },
+const BDMS = [
+    { id:'ed',    name:'Ed Lundberg',      initials:'EL', territory:'Ohio · West Virginia' },
+    { id:'haley', name:'Haley McHugh',     initials:'HM', territory:'Iowa · Nebraska · Kansas' },
+    { id:'molly', name:'Molly Dyer',       initials:'MD', territory:'Missouri · Kansas City' },
+    { id:'jason', name:'Jason Sherrer',    initials:'JS', territory:'North Carolina · Virginia' },
+    { id:'matt',  name:'Matt Katula',      initials:'MK', territory:'Georgia · South Carolina' },
+    { id:'shawn', name:'Shawn Lyons',      initials:'SL', territory:'Indiana · Kentucky' },
+    { id:'mitch', name:'Mitch Oakes',      initials:'MO', territory:'Minnesota · Wisconsin' },
+    { id:'erik',  name:'Erik Prather',     initials:'EP', territory:'Chicago / Illinois' },
+    { id:'marty', name:'Marty McLeary',    initials:'MM', territory:'Tennessee · Alabama' },
+    { id:'tyler', name:'Tyler Prazma',     initials:'TP', territory:'Central Illinois · Oklahoma' },
+    { id:'zach',  name:'Zach Haake',       initials:'ZH', territory:'Mississippi' },
+    { id:'cari',  name:'Cari-Ellen Edgin', initials:'CE', territory:'Virginia (limited)' },
+];
+
+const MEMBERSHIPS_2026 = [
+    { assoc:'Builders Exchange Central Ohio',  bdm:'ed',    cost:1030,    month:1, status:'charged' },
+    { assoc:'Louisville Business Journal',     bdm:'shawn', cost:200,     month:1, status:'charged' },
+    { assoc:'AGC of Missouri',                 bdm:'molly', cost:1545,    month:1, status:'charged' },
+    { assoc:'Indiana Subcontractors Assoc.',   bdm:'shawn', cost:850,     month:2, status:'charged', note:'Lower than 2025 ($1,545)' },
+    { assoc:'Chicagoland AGC',                 bdm:'erik',  cost:1400,    month:2, status:'charged' },
+    { assoc:'Minnesota Construction Assoc.',   bdm:'mitch', cost:250,     month:2, status:'charged', note:'Lower than 2025 ($350)' },
+    { assoc:'Chamber Association',             bdm:'ed',    cost:250,     month:2, status:'charged' },
+    { assoc:'ABC Middle Tennessee',            bdm:'marty', cost:1760,    month:2, status:'charged' },
+    { assoc:'AGCMO Sponsorship',               bdm:'molly', cost:2086.78, month:2, status:'charged', note:'Higher than 2025' },
+    { assoc:'Master Builders of Iowa',         bdm:'haley', cost:1287.50, month:2, status:'charged', note:'Higher than 2025 ($1,250)' },
+    { assoc:'OEDA Annual Membership',          bdm:'ed',    cost:330,     month:3, status:'charged' },
+    { assoc:'AGC Kentucky',                    bdm:'shawn', cost:1125,    month:4, status:'charged' },
+    { assoc:'ABC Indiana-Kentucky',            bdm:'shawn', cost:2866,    month:4, status:'charged' },
+    { assoc:'Association (to confirm)',        bdm:'molly', cost:316.79,  month:4, status:'charged' },
+    { assoc:'Association (to confirm)',        bdm:'shawn', cost:396.79,  month:4, status:'charged' },
+    { assoc:'AIA — American Inst. Architects', bdm:'shawn', cost:469.68,  month:4, status:'charged' },
+    { assoc:'TAHG Ohio Membership',            bdm:'ed',    cost:343,     month:4, status:'charged' },
+    { assoc:'Annual Renewal — Cincinnati',     bdm:'shawn', cost:200,     month:4, status:'charged' },
+    { assoc:'Central Illinois Builders (AGC)', bdm:'tyler', cost:550,     month:0, status:'anticipated' },
+    { assoc:'ASA Midwest',                     bdm:'molly', cost:1050,    month:7, status:'anticipated' },
+    { assoc:'ASA Chicago',                     bdm:'erik',  cost:990,     month:6, status:'anticipated' },
+];
+
+const SPONSORSHIPS_2026 = [
+    { assoc:'Tote Bag Sponsorship — ASA E',     bdm:'erik',    cost:1750,    month:1, status:'charged' },
+    { assoc:'Indiana Subcontractors Sponsor',   bdm:'michael', cost:3785,    month:2, status:'charged' },
+    { assoc:'RGL Logistics Golf Tournament',    bdm:null,      cost:100,     month:2, status:'charged' },
+    { assoc:'MBI Sponsorship',                  bdm:'haley',   cost:1545,    month:2, status:'charged' },
+    { assoc:'Sponsorship (to confirm)',         bdm:null,      cost:1250,    month:2, status:'charged' },
+    { assoc:'Sponsorship (to confirm)',         bdm:'molly',   cost:1545,    month:2, status:'charged' },
+    { assoc:'Life Network Sponsorship',         bdm:null,      cost:518.45,  month:3, status:'charged' },
+    { assoc:'Temple Baptist Sponsorship',       bdm:null,      cost:258.01,  month:4, status:'charged' },
+    { assoc:'Violence Prevention Sponsorship',  bdm:null,      cost:360.50,  month:4, status:'charged' },
+    { assoc:'Event Sponsorship (to confirm)',   bdm:null,      cost:550,     month:4, status:'charged' },
+    { assoc:'Sponsorship (to confirm)',         bdm:null,      cost:1187.08, month:4, status:'charged' },
+    { assoc:'Brinkmann Golf Sponsorship',       bdm:null,      cost:310,     month:4, status:'charged' },
+    { assoc:'AGCMO Golf Tournament',            bdm:'molly',   cost:618,     month:4, status:'charged' },
+    { assoc:'Sponsorship (to confirm)',         bdm:null,      cost:1187.08, month:5, status:'charged' },
+];
+
+const EVENTS_2026 = [
+    { date:'2026-01-14', name:'ASA Chicago Coffee with the GCs & BPI',               bdm:'erik',  org:'ASA Chicago' },
+    { date:'2026-02-04', name:'Meet the Estimators, Project Managers & More',         bdm:'mitch', org:'' },
+    { date:'2026-02-04', name:'ASA Midwest Meet the GC Expo',                         bdm:'tyler', org:'ASA Midwest' },
+    { date:'2026-02-12', name:'ABC W-Tennessee Meet the GC | Yates Construction',    bdm:'marty', org:'ABC W. Tennessee' },
+    { date:'2026-02-12', name:'5th Annual Casino Night — ABC Greater TN',             bdm:'marty', org:'ABC Greater TN' },
+    { date:'2026-02-19', name:'Meet the Generals — ABC Virginia',                     bdm:'jason', org:'ABC Virginia' },
+    { date:'2026-02-20', name:'Meet The General — Shakopee',                          bdm:'mitch', org:'' },
+    { date:'2026-02-24', name:'MBI Winter Conference',                                bdm:'haley', org:'MBI' },
+    { date:'2026-02-25', name:'Sub-ALA Meet the GCs Expo — Birmingham',               bdm:'marty', org:'' },
+    { date:'2026-03-05', name:'ABC Meet The General — St. Joseph / St. Cloud',        bdm:'mitch', org:'ABC' },
+    { date:'2026-03-11', name:'AGCMO Cocktails & Connections / Convention',           bdm:'molly', org:'AGC MO' },
+    { date:'2026-03-11', name:'ISA Construction Networking Event of the Year',        bdm:'shawn', org:'ISA' },
+    { date:'2026-03-11', name:'ABC Wisconsin Networking Social Menomonie',             bdm:'mitch', org:'ABC Wisconsin' },
+    { date:'2026-03-25', name:'ASA Midwest | BPI Lunch Meeting',                      bdm:'molly', org:'ASA Midwest' },
+    { date:'2026-03-30', name:'ASA Oklahoma GC Expo',                                 bdm:'tyler', org:'ASA Oklahoma' },
+    { date:'2026-04-02', name:'MBI BuildHer Event',                                   bdm:'haley', org:'MBI' },
+    { date:'2026-04-02', name:'ABC Meet the Generals — KC',                           bdm:'molly', org:'ABC' },
+    { date:'2026-04-09', name:'SIBA Spring Industry Reception',                       bdm:'tyler', org:'SIBA' },
+    { date:'2026-04-14', name:'AGCMO Pre-Con Luncheon Panel',                         bdm:'molly', org:'AGCMO' },
+    { date:'2026-04-16', name:"SubAla's Spring Mixer | Huntsville",                   bdm:'marty', org:'SubAla' },
+    { date:'2026-04-22', name:'AGC Minnesota 2026 Spring Member Networking',          bdm:'mitch', org:'AGC Minnesota' },
+    { date:'2026-04-23', name:"ASA Midwest / AGC Middle TN Meet the GC's",            bdm:'marty', org:'ASA Midwest' },
+    { date:'2026-04-24', name:'AGC Kentucky Keeneland Tailgate Event',                bdm:'shawn', org:'AGC Kentucky' },
+    { date:'2026-04-30', name:'ABC Indiana-Kentucky Meet the Generals',               bdm:'shawn', org:'ABC Indiana-Kentucky' },
+    { date:'2026-05-06', name:'GC/CM Connect w/ Pepper Construction',                 bdm:'shawn', org:'' },
+    { date:'2026-05-08', name:'AIA Indianapolis — Day at the Indy Motor Speedway',    bdm:'shawn', org:'AIA' },
+    { date:'2026-05-12', name:'AGCMO Leaders & Legends Panel',                        bdm:'molly', org:'AGCMO' },
+    { date:'2026-05-13', name:'2026 Chicagoland AGC Spring Summit',                   bdm:'erik',  org:'AGC Chicagoland' },
+    { date:'2026-05-13', name:'ISA Day at the Track',                                 bdm:'shawn', org:'ISA' },
+    { date:'2026-06-01', name:'Fifth Annual Cleanpower 2026 Golf Tournament',         bdm:'mitch', org:''},
+];
+
+// 2025 historical — from Budget & Historical tab, CNC Advertising BDM Reporting
+const HIST_2025 = {
+    months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    budget:  [26111,26111,26111,26111,26111,26111,26111,26111,26111,26111,46112,26111],
+    actual:  [44533,17396,27705,40120,30638,30579,38804,19006,29024,29600,24252,5520],
 };
 
-// ── Fetch + parse Google Sheets gviz JSON ─────────────────
-async function fetchSheet(id, tab) {
-    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(tab)}&headers=1`;
-    try {
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const headers = json.table.cols.map(c => c.label);
-        const rows = (json.table.rows || [])
-            .map(row => {
-                const obj = {};
-                (row.c || []).forEach((cell, i) => {
-                    obj[headers[i]] = cell ? (cell.f || cell.v) : '';
-                });
-                return obj;
-            })
-            .filter(row => headers[0] && row[headers[0]]);
-        return { headers, rows };
-    } catch(e) {
-        console.warn('Sheet fetch failed:', id, e);
-        return { headers: [], rows: [] };
-    }
+// 2025 top expense categories — from BDM Master Detail tab
+const CATEGORIES_2025 = [
+    { name:'Advertising Consulting', amount:74400 },
+    { name:'Sponsorships',           amount:40570 },
+    { name:'Vehicle Wraps',          amount:29422 },
+    { name:'Paid Ads Spending',      amount:28613 },
+    { name:'Client Events',          amount:25252 },
+    { name:'Client Meals',           amount:25172 },
+    { name:'Ad Memberships',         amount:23641 },
+    { name:'BDM Meals',              amount:12950 },
+    { name:'Video Production',       amount:11099 },
+    { name:'Ad Software',            amount:9856  },
+    { name:'Website Fees',           amount:9548  },
+    { name:'Promo Items',            amount:8335  },
+];
+
+// 2025 per-BDM activity spend — from individual BDM tabs (field activity only)
+const BDM_DETAIL_2025 = {
+    molly:  { events:17942, meals:24123, meetings:2086, gifts:296,  outings:1692, sponsorships:3476  },
+    shawn:  { events:5335,  meals:5475,  meetings:414,  gifts:169,  outings:0,    sponsorships:0     },
+    marty:  { events:6460,  meals:2558,  meetings:373,  gifts:0,    outings:50,   sponsorships:1200  },
+    ed:     { events:1990,  meals:556,   meetings:1336, gifts:0,    outings:125,  sponsorships:200   },
+    tyler:  { events:1301,  meals:2180,  meetings:0,    gifts:0,    outings:0,    sponsorships:0     },
+    haley:  { events:0,     meals:2097,  meetings:0,    gifts:127,  outings:675,  sponsorships:0     },
+    mitch:  { events:225,   meals:2512,  meetings:0,    gifts:0,    outings:0,    sponsorships:0     },
+    jason:  { events:1845,  meals:255,   meetings:0,    gifts:0,    outings:0,    sponsorships:515   },
+    cari:   { events:1295,  meals:95,    meetings:0,    gifts:0,    outings:516,  sponsorships:0     },
+    matt:   { events:348,   meals:2013,  meetings:0,    gifts:0,    outings:120,  sponsorships:0     },
+    erik:   { events:0,     meals:0,     meetings:0,    gifts:0,    outings:150,  sponsorships:285   },
+    zach:   { events:0,     meals:0,     meetings:0,    gifts:0,    outings:0,    sponsorships:0     },
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+        ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function val(row, key) { return (row[key] || '').toString().trim(); }
+function $c(s) { return document.querySelector(s); }
+function $id(s) { return document.getElementById(s); }
 
-function hmClass(v, max) {
-    if (!v || v === '-' || v === '' || isNaN(Number(v))) return '';
-    const ratio = Number(v) / max;
-    if (ratio <= 0) return '';
-    if (ratio < 0.25) return 'hm-1';
-    if (ratio < 0.5)  return 'hm-2';
-    if (ratio < 0.75) return 'hm-3';
-    return 'hm-4';
+function fmt$(n) {
+    if (n == null || isNaN(n)) return '—';
+    return '$' + Math.round(n).toLocaleString();
+}
+function fmtDec(n) {
+    if (n == null || isNaN(n)) return '—';
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits:0, maximumFractionDigits:2 });
 }
 
-function fmt(v) {
-    if (v === null || v === undefined || v === '') return '-';
-    const n = Number(String(v).replace(/[$,]/g,''));
-    if (!isNaN(n) && n === 0) return '-';
-    return v;
+function bdmName(id) {
+    const b = BDMS.find(x => x.id === id);
+    return b ? b.name : (id || '—');
+}
+function bdmObj(id) { return BDMS.find(x => x.id === id) || null; }
+
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function monthName(n) { return n >= 1 && n <= 12 ? MONTH_NAMES[n-1] : 'TBD'; }
+
+function eventMonth(dateStr) {
+    const d = new Date(dateStr);
+    return isNaN(d) ? '' : MONTH_NAMES[d.getMonth()];
 }
 
-function fmtCurrency(v) {
-    const n = Number(String(v).replace(/[$,]/g,''));
-    if (isNaN(n) || n === 0) return '-';
-    return '$' + n.toLocaleString();
+function fmtDate(dateStr) {
+    const d = new Date(dateStr + 'T12:00:00');
+    if (isNaN(d)) return dateStr;
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
 }
 
-// ── Render: Overview KPIs ─────────────────────────────────
-function renderOverview(events, memberships, responses) {
-    setText('kpi-events', events.rows.length || 0);
-    setText('kpi-members', memberships.rows.filter(r => val(r,'Status') === 'Active').length || memberships.rows.length);
-    const bdms = new Set(events.rows.map(r => val(r,'BDM Owner')).filter(Boolean));
-    setText('kpi-bdms', bdms.size || 9);
-    setText('kpi-responses', responses.rows.length || 0);
-
-    // Overview events table
-    const tbody = document.getElementById('overview-events-tbody');
-    if (events.rows.length) {
-        tbody.innerHTML = events.rows.map(r => {
-            const cost = fmtCurrency(val(r,'Registration Cost'));
-            const sponsor = fmtCurrency(val(r,'Sponsorship Amount'));
-            const status = val(r,'Status');
-            const sCls = status === 'Confirmed' ? 'b-conf' : status === 'Complete' ? 'b-active' : 'b-id';
-            return `<tr>
-                <td class="name">${esc(val(r,'Event Name'))}</td>
-                <td>${esc(val(r,'Association / Org'))}</td>
-                <td>${esc(val(r,'Date') || val(r,'date') || '-')}</td>
-                <td>${esc(val(r,'Territory'))}</td>
-                <td>${esc(val(r,'BDM Owner'))}</td>
-                <td>${esc(val(r,'Event Type'))}</td>
-                <td><span class="badge ${esc(sCls)}">${esc(status) || '-'}</span></td>
-                <td class="num">${esc(cost)}</td>
-                <td class="num">${esc(sponsor)}</td>
-            </tr>`;
-        }).join('');
-    }
-}
-
-// ── Render: Events tab ────────────────────────────────────
-function renderEvents(events) {
-    const tbody = document.getElementById('events-tbody');
-    if (!events.rows.length) return;
-    tbody.innerHTML = events.rows.map(r => {
-        const status = val(r,'Status');
-        const sCls = status === 'Confirmed' ? 'b-conf' : status === 'Complete' ? 'b-active' : 'b-id';
-        const geo = val(r,'Geofencing?');
-        const geoCls = geo === 'Yes' ? 'b-active' : geo === 'Evaluate' ? 'b-pending' : '';
-        return `<tr>
-            <td class="name">${esc(val(r,'Event Name'))}</td>
-            <td>${esc(val(r,'Association / Org'))}</td>
-            <td>${esc(val(r,'Event Type'))}</td>
-            <td>${esc(val(r,'Date') || '-')}</td>
-            <td>${esc(val(r,'Territory'))}</td>
-            <td>${esc(val(r,'BDM Owner'))}</td>
-            <td><span class="badge ${esc(sCls)}">${esc(status) || '-'}</span></td>
-            <td class="num">${esc(fmtCurrency(val(r,'Registration Cost')))}</td>
-            <td class="num">${esc(fmtCurrency(val(r,'Sponsorship Amount')))}</td>
-            <td>${geo ? `<span class="badge ${esc(geoCls)}">${esc(geo)}</span>` : '-'}</td>
-            <td>${esc(val(r,'Pre-Event Social Done?') || '-')}</td>
-            <td>${esc(val(r,'Post-Event Survey Sent?') || '-')}</td>
-            <td class="num">${esc(fmt(val(r,'Contacts Made')))}</td>
-            <td class="num">${esc(fmt(val(r,'BDM Event Rating')))}</td>
-            <td>${esc(val(r,'Attend Again?') || '-')}</td>
-        </tr>`;
-    }).join('');
-}
-
-// ── Render: Memberships tab ───────────────────────────────
-function renderMemberships(memberships) {
-    const typeCls = {Membership:'b-member',Sponsorship:'b-sponsor','Event-Only':'b-event'};
-    const tbody = document.getElementById('mem-tbody');
-    const rows = memberships.rows.length ? memberships.rows : [];
-    tbody.innerHTML = rows.map(r => {
-        const type = val(r,'Type');
-        const dec = val(r,'Keep / Drop Decision');
-        return `<tr>
-            <td class="name">${esc(val(r,'Association Name'))}</td>
-            <td><span class="badge ${esc(typeCls[type]||'b-pending')}">${esc(type)||'-'}</span></td>
-            <td>${esc(val(r,'BDM Owner'))}</td>
-            <td><span class="badge b-active">${esc(val(r,'Status')||'Active')}</span></td>
-            <td><span class="badge ${dec==='Keep'?'b-keep':'b-pending'}">${esc(dec)||'Pending'}</span></td>
-            <td>${esc(val(r,'POC Name'))}</td>
-            <td style="font-size:13px;color:var(--text-dim);max-width:260px;">${esc(val(r,'Notes / Value Assessment'))}</td>
-        </tr>`;
-    }).join('');
-
-    // BDM breakdown
-    const bdmMap = {};
-    rows.forEach(r => {
-        const bdm = val(r,'BDM Owner') || 'TBD';
-        if (!bdmMap[bdm]) bdmMap[bdm] = { total: 0, keep: 0, pending: 0 };
-        bdmMap[bdm].total++;
-        if (val(r,'Keep / Drop Decision') === 'Keep') bdmMap[bdm].keep++;
-        else bdmMap[bdm].pending++;
+// Aggregate memberships by BDM (charged only)
+function memByBDM() {
+    const map = {};
+    MEMBERSHIPS_2026.filter(m => m.status === 'charged').forEach(m => {
+        if (!m.bdm) return;
+        map[m.bdm] = (map[m.bdm] || 0) + m.cost;
     });
-    const maxTotal = Math.max(...Object.values(bdmMap).map(b => b.total), 1);
-    const bdmTbody = document.getElementById('bdm-tbody');
-    bdmTbody.innerHTML = Object.entries(bdmMap).map(([name, b]) =>
-        `<tr>
-            <td class="name">${esc(name)}</td>
-            <td class="num ${esc(hmClass(b.total, maxTotal))}">${b.total}</td>
-            <td class="num ${b.keep ? 'hm-2' : ''}">${b.keep || '-'}</td>
-            <td class="num ${b.pending ? 'hm-1' : ''}">${b.pending || '-'}</td>
-        </tr>`
-    ).join('') + `<tr class="total-row"><td>Grand Total</td><td class="num">${rows.length}</td><td class="num">${rows.filter(r=>val(r,'Keep / Drop Decision')==='Keep').length}</td><td class="num">${rows.filter(r=>val(r,'Keep / Drop Decision')!=='Keep').length}</td></tr>`;
+    return map;
 }
 
-// ── Render: Survey responses ──────────────────────────────
-function renderResponses(responses) {
-    const tbody = document.getElementById('responses-tbody');
-    const count = document.getElementById('kpi-responses');
-    if (count) count.textContent = responses.rows.length;
-
-    if (!responses.rows.length) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:24px;">No submissions yet</td></tr>';
-        return;
-    }
-    tbody.innerHTML = responses.rows.slice().reverse().map(r => {
-        const rating = val(r, responses.headers[5]) || val(r,'Overall Event Rating (1-5)') || '-';
-        const ratingCls = Number(rating) >= 4 ? 'hm-3' : Number(rating) >= 3 ? 'hm-2' : 'hm-1';
-        return `<tr>
-            <td>${esc(val(r, responses.headers[0]) || '-')}</td>
-            <td class="name">${esc(val(r, responses.headers[1]) || '-')}</td>
-            <td>${esc(val(r, responses.headers[2]) || '-')}</td>
-            <td>${esc(val(r, responses.headers[4]) || '-')}</td>
-            <td class="num ${esc(ratingCls)}">${esc(rating)}</td>
-            <td>${esc(val(r, responses.headers[6]) || '-')}</td>
-            <td class="num">${esc(val(r, responses.headers[7]) || '-')}</td>
-            <td>${esc(val(r, responses.headers[11]) || '-')}</td>
-        </tr>`;
-    }).join('');
-}
-
-function setText(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-}
-
-function setFooter(ts) {
-    document.querySelectorAll('.data-footer').forEach(el => {
-        el.textContent = `Live data · Last refreshed: ${ts} · The Knowing Agency`;
+function sponsorByBDM() {
+    const map = {};
+    SPONSORSHIPS_2026.filter(s => s.status === 'charged').forEach(s => {
+        if (!s.bdm) return;
+        map[s.bdm] = (map[s.bdm] || 0) + s.cost;
     });
+    return map;
 }
 
-// ── Login + load ──────────────────────────────────────────
-async function loadAllData() {
-    setFooter('Loading…');
-    const [events, memberships, responses] = await Promise.all([
-        fetchSheet(SHEETS.events.id, SHEETS.events.tab),
-        fetchSheet(SHEETS.memberships.id, SHEETS.memberships.tab),
-        fetchSheet(SHEETS.responses.id, SHEETS.responses.tab),
-    ]);
-    renderOverview(events, memberships, responses);
-    renderEvents(events);
-    renderMemberships(memberships);
-    renderResponses(responses);
-    setFooter(new Date().toLocaleString('en-US', {dateStyle:'medium', timeStyle:'short'}));
+function eventCountByBDM() {
+    const map = {};
+    EVENTS_2026.forEach(e => {
+        if (!e.bdm) return;
+        map[e.bdm] = (map[e.bdm] || 0) + 1;
+    });
+    return map;
+}
+
+// Status class from event count
+function statusClass(evtCount) {
+    if (evtCount >= 5) return 's-active';
+    if (evtCount >= 2) return 's-building';
+    if (evtCount >= 1) return 's-light';
+    return 's-quiet';
+}
+function statusLabel(evtCount) {
+    if (evtCount >= 5) return ['Active','b-active'];
+    if (evtCount >= 2) return ['Building','b-building'];
+    if (evtCount >= 1) return ['Light','b-light'];
+    return ['Quiet','b-quiet'];
+}
+
+// Chart registry — lazy init
+const CHARTS = {};
+function mkChart(id, cfg) {
+    if (CHARTS[id]) CHARTS[id].destroy();
+    const canvas = $id(id);
+    if (!canvas) return;
+    CHARTS[id] = new Chart(canvas, cfg);
+}
+
+// Chart defaults
+Chart.defaults.font.family = "'Open Sans', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#555555';
+
+const RED = '#C4242D', RED2 = '#E97A7F', RED3 = '#F5BBBE', DARK = '#352F31';
+
+// ═══════════════════════════════════════════════════════════════════
+// PAGE INIT FUNCTIONS — called lazily on showPage
+// ═══════════════════════════════════════════════════════════════════
+
+function initExpense() {
+    // --- Monthly 2026 chart (memberships + sponsorships by month) ---
+    const monthly2026 = Array(7).fill(0); // Jan–Jul
+    MEMBERSHIPS_2026.forEach(m => {
+        if (m.month >= 1 && m.month <= 7) monthly2026[m.month - 1] += m.cost;
+    });
+    SPONSORSHIPS_2026.forEach(s => {
+        if (s.month >= 1 && s.month <= 7) monthly2026[s.month - 1] += s.cost;
+    });
+    mkChart('chart-monthly2026', {
+        type: 'bar',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'],
+            datasets: [{
+                label: 'Charges ($)',
+                data: monthly2026,
+                backgroundColor: monthly2026.map((v,i) =>
+                    i < 5 ? RED : 'rgba(196,36,45,0.35)'
+                ),
+                borderRadius: 2,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ' ' + fmt$(ctx.parsed.y) } }
+            },
+            scales: {
+                y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: '#F0F0F0' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // --- 2025 Historical chart ---
+    mkChart('chart-hist2025', {
+        type: 'line',
+        data: {
+            labels: HIST_2025.months,
+            datasets: [
+                {
+                    label: '2025 Actual',
+                    data: HIST_2025.actual,
+                    borderColor: RED, backgroundColor: 'rgba(196,36,45,0.08)',
+                    fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2,
+                },
+                {
+                    label: '2025 Budget',
+                    data: HIST_2025.budget,
+                    borderColor: '#D0D0D0', backgroundColor: 'transparent',
+                    borderDash: [6,4], tension: 0, pointRadius: 0, borderWidth: 1.5,
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
+                tooltip: { callbacks: { label: ctx => ' ' + fmt$(ctx.parsed.y) } }
+            },
+            scales: {
+                y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: '#F0F0F0' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // --- BDM 2026 spend bar ---
+    const memMap = memByBDM();
+    const sponMap = sponsorByBDM();
+    const bdmRows = BDMS.map(b => ({
+        name: b.name,
+        mem: memMap[b.id] || 0,
+        spon: sponMap[b.id] || 0,
+    })).filter(r => r.mem + r.spon > 0).sort((a,b) => (b.mem+b.spon) - (a.mem+a.spon));
+
+    mkChart('chart-bdm2026', {
+        type: 'bar',
+        data: {
+            labels: bdmRows.map(r => r.name.split(' ')[0]),
+            datasets: [
+                { label: 'Memberships', data: bdmRows.map(r => r.mem),  backgroundColor: RED,  borderRadius: 2 },
+                { label: 'Sponsorships',data: bdmRows.map(r => r.spon), backgroundColor: RED2, borderRadius: 2 },
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
+                tooltip: { callbacks: { label: ctx => ' ' + fmt$(ctx.parsed.y) } }
+            },
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: '#F0F0F0' } }
+            }
+        }
+    });
+
+    // --- Category bars (CSS) ---
+    const catEl = $id('cat-bars');
+    if (catEl) {
+        const max = CATEGORIES_2025[0].amount;
+        catEl.innerHTML = CATEGORIES_2025.slice(0,12).map(c => `
+            <div class="exp-bar-row">
+                <div class="exp-bar-label">${esc(c.name)}</div>
+                <div class="exp-bar-track"><div class="exp-bar-fill" style="width:${Math.round(c.amount/max*100)}%"></div></div>
+                <div class="exp-bar-val">${fmt$(c.amount)}</div>
+            </div>`).join('');
+    }
+
+    // --- BDM detail table ---
+    const evtMap = eventCountByBDM();
+    const tbody = $id('expense-bdm-tbody');
+    if (tbody) {
+        const rows = BDMS.map(b => {
+            const m = memMap[b.id] || 0;
+            const s = sponMap[b.id] || 0;
+            const e = evtMap[b.id] || 0;
+            return { b, m, s, e, total: m+s };
+        }).sort((a,b) => b.total - a.total);
+
+        tbody.innerHTML = rows.map(({b,m,s,e,total}) => `<tr>
+            <td class="name">${esc(b.name)}</td>
+            <td style="color:var(--text-dim);font-size:12px;">${esc(b.territory)}</td>
+            <td class="num">${m ? fmt$(m) : '—'}</td>
+            <td class="num">${s ? fmt$(s) : '—'}</td>
+            <td class="num">${total ? fmt$(total) : '—'}</td>
+            <td class="num">${e || '—'}</td>
+        </tr>`).join('');
+    }
+
+    const f = $id('footer-expense');
+    if (f) f.textContent = `Data as of ${DATA_REFRESHED} · Source: BDM Memberships/Sponsorships 2026 + CNC Advertising BDM Report 2025 · The Knowing Agency`;
+}
+
+function initStatus() {
+    const evtMap = eventCountByBDM();
+    const memMap = memByBDM();
+    const grid = $id('status-grid');
+    if (!grid) return;
+
+    grid.innerHTML = BDMS.map(b => {
+        const evts = evtMap[b.id] || 0;
+        const mem  = memMap[b.id] || 0;
+        const sCls = statusClass(evts);
+        const [sLbl, sBadge] = statusLabel(evts);
+        const lastEvt = [...EVENTS_2026].filter(e => e.bdm === b.id).sort((a,z) => z.date.localeCompare(a.date))[0];
+        const lastDate = lastEvt ? fmtDate(lastEvt.date) : '—';
+
+        return `<div class="status-card ${sCls}" onclick="showPage('drilldown', null, '${b.id}')">
+            <div class="sc-avatar">${esc(b.initials)}</div>
+            <div class="sc-name">${esc(b.name)}</div>
+            <div class="sc-territory">${esc(b.territory)}</div>
+            <div class="sc-stats">
+                <div class="sc-stat">
+                    <div class="sc-stat-val">${evts}</div>
+                    <div class="sc-stat-lbl">Events</div>
+                </div>
+                <div class="sc-stat-divider"></div>
+                <div class="sc-stat">
+                    <div class="sc-stat-val">${mem ? fmt$(mem) : '—'}</div>
+                    <div class="sc-stat-lbl">Memberships</div>
+                </div>
+            </div>
+            <div class="sc-footer">
+                <span class="badge ${sBadge}">${sLbl}</span>
+                <span class="sc-drill">Last: ${esc(lastDate)} →</span>
+            </div>
+        </div>`;
+    }).join('');
+
+    const f = $id('footer-status');
+    if (f) f.textContent = `Data as of ${DATA_REFRESHED} · Click any card to drill down · The Knowing Agency`;
+}
+
+let currentBDM = 'shawn';
+
+function initDrilldown(bdmId) {
+    if (bdmId) currentBDM = bdmId;
+
+    // Render tiles
+    const tilesEl = $id('bdm-tiles');
+    if (tilesEl) {
+        tilesEl.innerHTML = BDMS.map(b => `
+            <div class="bdm-tile ${b.id === currentBDM ? 'selected' : ''}"
+                 onclick="initDrilldown('${b.id}')">${esc(b.name.split(' ')[0])}</div>
+        `).join('');
+    }
+
+    const b = bdmObj(currentBDM);
+    if (!b) return;
+
+    // Header
+    const header = $id('dd-header');
+    if (header) header.innerHTML = `
+        <div class="drilldown-name">${esc(b.name)}</div>
+        <div class="drilldown-territory">${esc(b.territory)}</div>
+    `;
+
+    const evts = EVENTS_2026.filter(e => e.bdm === currentBDM);
+    const mems = MEMBERSHIPS_2026.filter(m => m.bdm === currentBDM);
+    const spons = SPONSORSHIPS_2026.filter(s => s.bdm === currentBDM);
+    const memTotal = mems.reduce((a,m) => a + m.cost, 0);
+    const sponTotal = spons.reduce((a,s) => a + s.cost, 0);
+    const hist = BDM_DETAIL_2025[currentBDM];
+    const hist2025Total = hist ? Object.values(hist).reduce((a,v)=>a+v,0) : 0;
+
+    // KPIs
+    const kpisEl = $id('dd-kpis');
+    if (kpisEl) kpisEl.innerHTML = `
+        <div class="kpi">
+            <div class="kpi-label">Events 2026</div>
+            <div class="kpi-value">${evts.length}</div>
+            <div class="kpi-sub">Jan–Jun 2026</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Memberships 2026</div>
+            <div class="kpi-value mono">${mems.length > 0 ? fmt$(memTotal) : '—'}</div>
+            <div class="kpi-sub">${mems.length} association${mems.length!==1?'s':''}</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Sponsorships 2026</div>
+            <div class="kpi-value mono">${spons.length > 0 ? fmt$(sponTotal) : '—'}</div>
+            <div class="kpi-sub">${spons.length} sponsorship${spons.length!==1?'s':''}</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">2025 Activity Spend</div>
+            <div class="kpi-value mono">${hist2025Total > 0 ? fmt$(hist2025Total) : '—'}</div>
+            <div class="kpi-sub">Events, meals, meetings</div>
+        </div>
+    `;
+
+    // Panels
+    const panels = $id('dd-panels');
+    if (!panels) return;
+
+    // Events list
+    const evtHtml = evts.length ? evts.sort((a,z) => a.date.localeCompare(z.date)).map(e => `
+        <div class="mini-row">
+            <div class="mini-row-meta">${fmtDate(e.date)}</div>
+            <div class="mini-row-name">${esc(e.name)}</div>
+            ${e.org ? `<div class="mini-row-meta">${esc(e.org)}</div>` : ''}
+        </div>`).join('') : `<div class="no-data">No events tracked for ${esc(b.name)} in 2026.</div>`;
+
+    // Memberships list
+    const memHtml = mems.length ? mems.map(m => `
+        <div class="mini-row">
+            <div class="mini-row-name">${esc(m.assoc)}</div>
+            <div class="mini-row-meta">${monthName(m.month)}</div>
+            <div class="mini-row-val">${fmtDec(m.cost)}</div>
+        </div>`).join('') : `<div class="no-data">No memberships tracked.</div>`;
+
+    // 2025 category breakdown
+    let hist2025Html = '';
+    if (hist) {
+        const cats = [
+            ['Client Events', hist.events], ['Client Meals', hist.meals],
+            ['Meetings', hist.meetings],    ['Sponsorships', hist.sponsorships],
+            ['Outings', hist.outings],      ['Customer Gifts', hist.gifts],
+        ].filter(([,v]) => v > 0).sort((a,b) => b[1]-a[1]);
+        const maxV = cats.length ? cats[0][1] : 1;
+        hist2025Html = cats.map(([n,v]) => `
+            <div class="exp-bar-row">
+                <div class="exp-bar-label" style="width:130px;">${esc(n)}</div>
+                <div class="exp-bar-track"><div class="exp-bar-fill" style="width:${Math.round(v/maxV*100)}%"></div></div>
+                <div class="exp-bar-val">${fmt$(v)}</div>
+            </div>`).join('');
+    } else {
+        hist2025Html = `<div class="no-data">No 2025 detail data available.</div>`;
+    }
+
+    panels.innerHTML = `
+        <div>
+            <div class="drilldown-panel" style="margin-bottom:14px;">
+                <div class="card-title">2026 Events Attended</div>
+                <div class="mini-list">${evtHtml}</div>
+            </div>
+            <div class="drilldown-panel">
+                <div class="card-title">2026 Memberships</div>
+                <div class="mini-list">${memHtml}</div>
+            </div>
+        </div>
+        <div class="drilldown-panel">
+            <div class="card-title">2025 Activity Spend by Category</div>
+            <div class="exp-bar-list" style="margin-top:8px;">${hist2025Html}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:16px;">Source: CNC Advertising BDM Reporting 2025 (field activity costs only — excludes company-wide advertising)</div>
+        </div>
+    `;
+
+    const f = $id('footer-drilldown');
+    if (f) f.textContent = `Data as of ${DATA_REFRESHED} · The Knowing Agency`;
+}
+
+function initEvents() {
+    const tbody = $id('events-tbody');
+    if (!tbody) return;
+    const sorted = [...EVENTS_2026].sort((a,b) => a.date.localeCompare(b.date));
+    tbody.innerHTML = sorted.map(e => `<tr>
+        <td class="mono" style="color:var(--text);font-size:12px;">${esc(fmtDate(e.date))}</td>
+        <td class="name">${esc(e.name)}</td>
+        <td>${esc(bdmName(e.bdm))}</td>
+        <td style="color:var(--text-dim);">${esc(e.org || '—')}</td>
+        <td><span class="badge b-light">${esc(eventMonth(e.date))}</span></td>
+    </tr>`).join('');
+
+    const f = $id('footer-events');
+    if (f) f.textContent = `30 events Jan–Jun 2026 · Source: 2026 BDM Tracker · The Knowing Agency`;
+}
+
+function initMemberships() {
+    // Pipeline grid
+    const pipe = $id('mem-pipeline');
+    if (pipe) {
+        const monthly = Array(12).fill(0);
+        MEMBERSHIPS_2026.filter(m => m.status === 'charged' && m.month >= 1).forEach(m => monthly[m.month-1] += m.cost);
+        pipe.innerHTML = MONTH_NAMES.map((mn, i) => `
+            <div class="pip-cell">
+                <div class="pip-mon">${mn}</div>
+                <div class="pip-val ${monthly[i] > 0 ? 'live' : ''}">${monthly[i] > 0 ? fmt$(monthly[i]) : '—'}</div>
+            </div>`).join('');
+    }
+
+    // Memberships table
+    const tbody = $id('mem-tbody');
+    if (tbody) {
+        tbody.innerHTML = MEMBERSHIPS_2026.map(m => `<tr>
+            <td class="name">${esc(m.assoc)}</td>
+            <td>${esc(bdmName(m.bdm))}</td>
+            <td class="num">${fmtDec(m.cost)}</td>
+            <td>${esc(monthName(m.month))}</td>
+            <td><span class="badge ${m.status === 'charged' ? 'b-charged' : 'b-anticipated'}">${esc(m.status)}</span></td>
+            <td style="font-size:12px;color:var(--text-dim);max-width:200px;">${esc(m.note||'')}</td>
+        </tr>`).join('');
+    }
+
+    // Sponsorships table
+    const stbody = $id('sponsor-tbody');
+    if (stbody) {
+        stbody.innerHTML = SPONSORSHIPS_2026.map(s => `<tr>
+            <td class="name">${esc(s.assoc)}</td>
+            <td>${esc(s.bdm ? bdmName(s.bdm) : '—')}</td>
+            <td class="num">${fmtDec(s.cost)}</td>
+            <td>${esc(monthName(s.month))}</td>
+            <td><span class="badge b-sponsor">${esc(s.status)}</span></td>
+        </tr>`).join('');
+    }
+
+    const f = $id('footer-memberships');
+    if (f) f.textContent = `Data as of ${DATA_REFRESHED} · Source: BDM Memberships/Yearly Sponsorships · The Knowing Agency`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NAV + LOGIN
+// ═══════════════════════════════════════════════════════════════════
+const PAGE_INITS = {
+    expense:     initExpense,
+    status:      initStatus,
+    drilldown:   initDrilldown,
+    events:      initEvents,
+    memberships: initMemberships,
+};
+
+let initializedPages = new Set();
+
+function showPage(name, btn, bdmId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+
+    const pageEl = $id('page-' + name);
+    if (pageEl) pageEl.classList.add('active');
+
+    if (btn) btn.classList.add('active');
+    else {
+        const nb = $id('nav-' + name);
+        if (nb) nb.classList.add('active');
+    }
+
+    // Lazy init — init once unless it's the drilldown (needs bdmId)
+    if (name === 'drilldown') {
+        initDrilldown(bdmId || currentBDM);
+    } else if (PAGE_INITS[name] && !initializedPages.has(name)) {
+        PAGE_INITS[name]();
+        initializedPages.add(name);
+    }
 }
 
 function doLogin() {
-    const u = document.getElementById('u').value.trim();
-    const p = document.getElementById('p').value.trim();
+    const u = $id('u').value.trim();
+    const p = $id('p').value.trim();
     if (u === 'admin' && p === 'CNC_preview_26') {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('app').classList.add('visible');
-        loadAllData();
+        $id('login-screen').classList.add('hidden');
+        $id('app').classList.add('visible');
+        $id('topbar-refresh').textContent = `· data: ${DATA_REFRESHED}`;
+        // Init first visible page
+        initExpense();
+        initializedPages.add('expense');
     } else {
-        document.getElementById('login-error').style.display = 'block';
+        $id('login-error').style.display = 'block';
     }
 }
+
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-function showPage(name, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    btn.classList.add('active');
-}
-
-function resetFilters() { loadAllData(); }
 </script>
 </body>
 </html>
