@@ -219,6 +219,36 @@
         .sc-drill { font-size: 11px; color: var(--text-dim); text-decoration: none; }
         .status-card:hover .sc-drill { color: var(--red); }
 
+        /* ── SORT CONTROLS ─────────────────────── */
+        .sort-bar { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+        .sort-bar-label { font-size:11px; color:var(--text-dim); letter-spacing:0.06em; text-transform:uppercase; font-weight:700; margin-right:4px; }
+        .sort-btn { padding:4px 12px; border:1px solid var(--border); border-radius:2px; font-size:11px; font-weight:600; color:var(--text-secondary); background:var(--bg-card); cursor:pointer; transition:all 0.12s; }
+        .sort-btn:hover { border-color:var(--red); color:var(--red); }
+        .sort-btn.active { background:var(--red-light); color:var(--red); border-color:var(--red); }
+
+        /* ── EVENT STATUS PILLS ─────────────────── */
+        .evt-pill { display:inline-block; padding:2px 7px; border-radius:2px; font-size:10px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; white-space:nowrap; }
+        .ep-held        { background:#E8F5E9; color:#2E7D32; }
+        .ep-upcoming    { background:#E3F2FD; color:#1565C0; }
+        .ep-scheduled   { background:#F5F5F5; color:#757575; }
+        .ep-notapproved { background:#FFEBEE; color:#C62828; }
+        .ep-dismissed   { background:#FEF3C7; color:#B45309; }
+        .ep-cancelled   { background:#FCE4EC; color:#880E4F; }
+        .ep-nodata      { background:#F5F5F5; color:#AAAAAA; border:1px solid #E0E0E0; }
+
+        /* ── DRILLDOWN TABS ─────────────────────── */
+        .dd-tab-bar { display:flex; border-bottom:1px solid var(--border); margin-bottom:14px; }
+        .dd-tab { padding:8px 16px; font-size:12px; font-weight:600; color:var(--text-dim); cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; transition:all 0.15s; }
+        .dd-tab.active { color:var(--red); border-bottom-color:var(--red); }
+        .dd-tab-content { display:none; }
+        .dd-tab-content.active { display:block; }
+
+        /* ── CALENDAR PLACEHOLDER ───────────────── */
+        .cal-placeholder { border:2px dashed var(--border); border-radius:4px; padding:28px 20px; text-align:center; color:var(--text-dim); }
+        .cal-placeholder-icon { font-size:32px; margin-bottom:8px; }
+        .cal-placeholder-label { font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+        .cal-placeholder-sub { font-size:11px; margin-top:4px; }
+
         /* ── BDM DRILLDOWN ─────────────────────── */
         .bdm-tiles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .bdm-tile {
@@ -257,6 +287,17 @@
         .exp-bar-fill { height: 100%; background: var(--red); border-radius: 4px; transition: width 0.5s ease; }
         .exp-bar-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); font-weight: 500; white-space: nowrap; width: 70px; }
 
+        /* ── EVENTS TRACKER ─────────────────────── */
+        .view-toggle { display:flex; gap:0; border:1px solid var(--border); border-radius:3px; overflow:hidden; }
+        .view-btn { padding:5px 14px; font-size:12px; font-weight:600; color:var(--text-secondary); background:var(--bg-card); border:none; cursor:pointer; transition:all 0.12s; }
+        .view-btn.active { background:var(--red); color:#fff; }
+        .view-btn:not(.active):hover { background:#F5F5F5; }
+        .evt-cal-placeholder { border:2px dashed var(--border); border-radius:4px; padding:48px 20px; text-align:center; color:var(--text-dim); margin-top:2px; }
+        th.sortable { cursor:pointer; user-select:none; }
+        th.sortable:hover { color:var(--text); }
+        th.sort-asc::after  { content:' ↑'; color:var(--red); }
+        th.sort-desc::after { content:' ↓'; color:var(--red); }
+
         /* ── SURVEY ─────────────────────────────── */
         .survey-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .s-row { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: #FAFAFA; border: 1px solid var(--border); border-radius: 3px; }
@@ -284,6 +325,87 @@
         /* ── MEMBERSHIP BUDGET ROW ──────────────── */
         td.over  { color: #991B1B !important; }
         td.under { color: var(--green) !important; }
+
+        /* ── STATUS BOARD TABS ─────────────────── */
+        .sb-panel { background:var(--bg-card); border:1px solid var(--border); border-radius:3px; margin-bottom:16px; overflow:hidden; }
+        .sb-tab-bar { display:flex; border-bottom:1px solid var(--border); background:#FAFAFA; }
+        .sb-tab { padding:10px 18px; font-size:12px; font-weight:600; color:var(--text-dim); cursor:pointer; border:none; background:none; border-bottom:2px solid transparent; transition:all 0.15s; letter-spacing:0.02em; }
+        .sb-tab:hover { color:var(--text); }
+        .sb-tab.active { color:var(--red); border-bottom-color:var(--red); background:var(--bg-card); }
+        .sb-tab-content { display:none; padding:20px; }
+        .sb-tab-content.active { display:flex; gap:24px; align-items:flex-start; }
+        .sb-chart-wrap { flex-shrink:0; width:220px; }
+        .sb-right { flex:1; min-width:0; }
+
+        /* Tab 1 — Status groups */
+        .sb-group { margin-bottom:14px; }
+        .sb-group-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+        .sb-group-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+        .sb-names { display:flex; flex-wrap:wrap; gap:4px; }
+        .sb-name-tag { font-size:12px; color:var(--text-secondary); background:#F5F5F5; padding:2px 8px; border-radius:2px; }
+
+        /* Tab 2 — F1 Podium */
+        .podium-wrap { display:flex; align-items:flex-end; gap:6px; height:120px; flex-shrink:0; width:200px; }
+        .podium-col { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; flex:1; }
+        .podium-name { font-size:10px; font-weight:700; text-align:center; margin-bottom:4px; color:var(--text); line-height:1.2; }
+        .podium-val { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-dim); margin-bottom:4px; }
+        .podium-block { width:100%; border-radius:2px 2px 0 0; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-weight:700; font-size:16px; color:#fff; }
+        .p-gold   { background:#B8922A; }
+        .p-silver { background:#8A8A8A; }
+        .p-bronze { background:#8B5C2E; }
+        .f1-list { flex:1; }
+        .f1-row { display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid #F5F5F5; font-size:12px; }
+        .f1-row:last-child { border-bottom:none; }
+        .f1-pos { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-dim); width:20px; flex-shrink:0; }
+        .f1-name { flex:1; color:var(--text); font-weight:500; }
+        .f1-val { font-family:'DM Mono',monospace; font-size:12px; color:var(--text); }
+        .f1-gap { font-size:11px; color:var(--text-dim); margin-left:6px; }
+
+        /* Tab 3 — Spend Analytics */
+        .spend-stat-big { margin-bottom:16px; }
+        .spend-stat-label { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:4px; }
+        .spend-stat-val { font-family:'DM Mono',monospace; font-size:28px; font-weight:500; color:var(--text); }
+        .callout-cards { display:flex; gap:10px; margin-bottom:14px; }
+        .callout-card { flex:1; padding:12px 14px; border-radius:3px; border:1px solid; }
+        .callout-green { background:var(--green-bg); border-color:#A5D6A7; }
+        .callout-amber { background:var(--amber-bg); border-color:#FCD34D; }
+        .callout-title { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px; }
+        .callout-green .callout-title { color:var(--green); }
+        .callout-amber .callout-title { color:var(--amber); }
+        .callout-name { font-weight:700; font-size:13px; color:var(--text); }
+        .callout-sub { font-size:11px; color:var(--text-dim); margin-top:2px; }
+
+        /* Tab 4 — Activity */
+        .act-summary { display:flex; flex-direction:column; gap:12px; width:200px; flex-shrink:0; }
+        .act-stat { text-align:center; padding:14px; background:#FAFAFA; border:1px solid var(--border); border-radius:3px; }
+        .act-stat-val { font-family:'DM Mono',monospace; font-size:24px; font-weight:500; color:var(--text); }
+        .act-stat-lbl { font-size:10px; color:var(--text-dim); margin-top:4px; letter-spacing:0.08em; text-transform:uppercase; }
+        .act-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #F5F5F5; font-size:12px; }
+        .act-row:last-child { border-bottom:none; }
+        .act-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+        .act-dot-green  { background:var(--green); }
+        .act-dot-amber  { background:#D97706; }
+        .act-dot-red    { background:var(--red); }
+        .act-name { flex:1; color:var(--text); font-weight:500; }
+        .act-date { font-size:11px; color:var(--text-dim); }
+        .act-days { font-size:11px; }
+
+        /* Status card updates */
+        .photo-placeholder { width:44px; height:44px; background:#E8E8E8; border-radius:3px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+        .photo-placeholder svg { width:20px; height:20px; fill:#BBBBBB; }
+        .sc-top { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+        .sc-top-info { flex:1; }
+        .sc-emoji { font-size:16px; line-height:1; }
+
+        /* ── YEAR DIVIDER ──────────────────────── */
+        .year-divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 8px 0 16px; font-size: 11px; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+        }
+        .year-divider::before, .year-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
     </style>
 </head>
 <body>
@@ -362,28 +484,7 @@
                     <span class="page-title-badge">2026 YTD</span>
                 </div>
 
-                <div class="grid-4">
-                    <div class="kpi">
-                        <div class="kpi-label">2026 Memberships</div>
-                        <div class="kpi-value">$19,297</div>
-                        <div class="kpi-delta delta-over">▲ $2,352 over budget</div>
-                    </div>
-                    <div class="kpi">
-                        <div class="kpi-label">2026 Sponsorships</div>
-                        <div class="kpi-value">$14,964</div>
-                        <div class="kpi-delta delta-over">▲ $1,016 over budget</div>
-                    </div>
-                    <div class="kpi">
-                        <div class="kpi-label">2026 Combined Spend</div>
-                        <div class="kpi-value red">$34,261</div>
-                        <div class="kpi-delta delta-over">▲ $3,368 over budget</div>
-                    </div>
-                    <div class="kpi">
-                        <div class="kpi-label">Events Attended</div>
-                        <div class="kpi-value">30</div>
-                        <div class="kpi-sub">Jan – Jun 2026</div>
-                    </div>
-                </div>
+                <div class="grid-4" id="expense-kpis"></div>
 
                 <div class="grid-2">
                     <div class="card">
@@ -391,15 +492,17 @@
                         <div class="chart-wrap"><canvas id="chart-monthly2026" height="220"></canvas></div>
                     </div>
                     <div class="card">
-                        <div class="card-title">2025 Full-Year Advertising — Budget vs Actual</div>
-                        <div class="chart-wrap"><canvas id="chart-hist2025" height="220"></canvas></div>
+                        <div class="card-title">2026 Spend by BDM</div>
+                        <div class="chart-wrap"><canvas id="chart-bdm2026" height="220"></canvas></div>
                     </div>
                 </div>
 
+                <div class="year-divider"><span>2025 Full-Year Reference — Advertising</span></div>
+
                 <div class="grid-2">
                     <div class="card">
-                        <div class="card-title">2026 Spend by BDM</div>
-                        <div class="chart-wrap"><canvas id="chart-bdm2026" height="280"></canvas></div>
+                        <div class="card-title">2025 Full-Year Actual Expenses vs Budget - Advertising</div>
+                        <div class="chart-wrap"><canvas id="chart-hist2025" height="220"></canvas></div>
                     </div>
                     <div class="card">
                         <div class="card-title">2025 Advertising by Category</div>
@@ -434,22 +537,42 @@
                     BDM Status Board
                     <span class="page-title-badge">2026 Activity</span>
                 </div>
-                <div class="status-grid" id="status-grid"></div>
-                <div class="card" style="margin-top:0;">
-                    <div class="card-title">Activity Legend</div>
-                    <div style="display:flex;gap:24px;flex-wrap:wrap;">
-                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:var(--green);border-radius:2px;"></div><strong>Active</strong> — 5+ events attended</div>
-                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:#D97706;border-radius:2px;"></div><strong>Building</strong> — 2–4 events</div>
-                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:var(--blue);border-radius:2px;"></div><strong>Light</strong> — 1 event</div>
-                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;"><div style="width:12px;height:12px;background:#D0D0D0;border-radius:2px;"></div><strong>Quiet</strong> — no events tracked</div>
+                <div class="sb-panel">
+                    <div class="sb-tab-bar">
+                        <button class="sb-tab active" onclick="sbTab(this,'sb-t1')">Status Distribution</button>
+                        <button class="sb-tab" onclick="sbTab(this,'sb-t2')">Rankings</button>
+                        <button class="sb-tab" onclick="sbTab(this,'sb-t3')">Spend Analytics</button>
+                        <button class="sb-tab" onclick="sbTab(this,'sb-t4')">Activity</button>
+                    </div>
+                    <div class="sb-tab-content active" id="sb-t1">
+                        <div class="sb-chart-wrap"><canvas id="chart-status-donut" height="180"></canvas></div>
+                        <div class="sb-right" id="sb-t1-names"></div>
+                    </div>
+                    <div class="sb-tab-content" id="sb-t2">
+                        <div id="sb-t2-inner" style="display:flex;gap:24px;width:100%;align-items:flex-start;"></div>
+                    </div>
+                    <div class="sb-tab-content" id="sb-t3">
+                        <div id="sb-t3-inner" style="display:flex;gap:24px;width:100%;align-items:flex-start;"></div>
+                    </div>
+                    <div class="sb-tab-content" id="sb-t4">
+                        <div id="sb-t4-inner" style="display:flex;gap:24px;width:100%;align-items:flex-start;"></div>
                     </div>
                 </div>
+
+                <div class="status-grid" id="status-grid"></div>
                 <div class="data-footer" id="footer-status"></div>
             </div>
 
             <!-- ══ PAGE: BDM DRILLDOWN ══════════════════════════════ -->
             <div class="page" id="page-drilldown">
                 <div class="page-title">BDM Drilldown</div>
+                <div class="sort-bar">
+                    <span class="sort-bar-label">Sort:</span>
+                    <button class="sort-btn active" onclick="ddSort('name',this)">A – Z</button>
+                    <button class="sort-btn" onclick="ddSort('status',this)">By Status</button>
+                    <button class="sort-btn" onclick="ddSort('events',this)">By Events</button>
+                    <button class="sort-btn" onclick="ddSort('spend',this)">By Spend</button>
+                </div>
                 <div class="bdm-tiles" id="bdm-tiles"></div>
                 <div id="drilldown-body">
                     <div class="drilldown-header" id="dd-header"></div>
@@ -461,25 +584,36 @@
 
             <!-- ══ PAGE: EVENTS TRACKER ═════════════════════════════ -->
             <div class="page" id="page-events">
-                <div class="page-title">
-                    Events Tracker
-                    <span class="page-title-badge">30 Events · Jan–Jun 2026</span>
+                <div class="page-title" style="justify-content:space-between;">
+                    <span>Events Tracker <span class="page-title-badge" id="events-badge">2026</span></span>
+                    <div class="view-toggle">
+                        <button class="view-btn active" id="evt-list-btn" onclick="evtView('list',this)">List</button>
+                        <button class="view-btn" id="evt-cal-btn" onclick="evtView('cal',this)">Calendar</button>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="card-title">All 2026 Events — BDM Field Activity</div>
+                <div class="card" id="evt-list-view">
+                    <div class="card-title" id="events-card-title">All 2026 Events — BDM Field Activity</div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Event Name</th>
-                                    <th>BDM</th>
-                                    <th>Organization</th>
-                                    <th>Month</th>
+                                    <th class="sortable" data-col="date">Date</th>
+                                    <th class="sortable" data-col="name">Event Name</th>
+                                    <th class="sortable" data-col="bdm">BDM</th>
+                                    <th class="sortable" data-col="org">Organization</th>
+                                    <th class="sortable" data-col="type">Type</th>
+                                    <th class="num sortable" data-col="expense">Expenses</th>
                                 </tr>
                             </thead>
                             <tbody id="events-tbody"></tbody>
                         </table>
+                    </div>
+                </div>
+                <div id="evt-cal-view" style="display:none;">
+                    <div class="evt-cal-placeholder">
+                        <div style="font-size:32px;margin-bottom:10px;">📅</div>
+                        <div style="font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;">Calendar View — Coming Soon</div>
+                        <div style="font-size:12px;margin-top:6px;">Events pinned to calendar dates will display here once a live calendar feed is connected.</div>
                     </div>
                 </div>
                 <div class="data-footer" id="footer-events"></div>
@@ -492,28 +626,7 @@
                     <span class="page-title-badge">2026</span>
                 </div>
 
-                <div class="grid-4">
-                    <div class="kpi">
-                        <div class="kpi-label">Total Charged</div>
-                        <div class="kpi-value mono">$19,297</div>
-                        <div class="kpi-sub">Through Apr 2026</div>
-                    </div>
-                    <div class="kpi">
-                        <div class="kpi-label">Budgeted</div>
-                        <div class="kpi-value mono">$16,945</div>
-                        <div class="kpi-sub">Full year 2026</div>
-                    </div>
-                    <div class="kpi">
-                        <div class="kpi-label">Variance</div>
-                        <div class="kpi-value red mono">–$1,362</div>
-                        <div class="kpi-delta delta-over">8% over budget</div>
-                    </div>
-                    <div class="kpi">
-                        <div class="kpi-label">Anticipated EOY</div>
-                        <div class="kpi-value mono">$2,590</div>
-                        <div class="kpi-sub">3 memberships pending</div>
-                    </div>
-                </div>
+                <div class="grid-4" id="mem-kpis"></div>
 
                 <div class="card">
                     <div class="card-title">Renewal Pipeline — Charges by Month</div>
@@ -535,19 +648,13 @@
                                 </tr>
                             </thead>
                             <tbody id="mem-tbody"></tbody>
-                            <tfoot>
-                                <tr class="total-row">
-                                    <td colspan="2">Grand Total</td>
-                                    <td class="num">$19,297</td>
-                                    <td colspan="3">Budget: $16,945 · Variance: –$1,362</td>
-                                </tr>
-                            </tfoot>
+                            <tfoot><tr class="total-row" id="mem-tfoot"></tr></tfoot>
                         </table>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">Sponsorships 2026 — $14,964 Actual vs $13,948 Budgeted</div>
+                    <div class="card-title" id="spon-card-title">Sponsorships 2026</div>
                     <div class="table-wrap">
                         <table>
                             <thead>
@@ -560,13 +667,7 @@
                                 </tr>
                             </thead>
                             <tbody id="sponsor-tbody"></tbody>
-                            <tfoot>
-                                <tr class="total-row">
-                                    <td colspan="2">Grand Total</td>
-                                    <td class="num">$14,964</td>
-                                    <td colspan="2">Budget: $13,948 · Variance: –$1,016</td>
-                                </tr>
-                            </tfoot>
+                            <tfoot><tr class="total-row" id="spon-tfoot"></tr></tfoot>
                         </table>
                     </div>
                 </div>
@@ -640,11 +741,12 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// DATA LAYER — refreshed Jun 2, 2026 via Drive MCP
-// To refresh: ask Claude to re-read the Drive files and regenerate
-// Future: replace with Google Apps Script endpoint (TKA accounts only)
+// DATA LAYER — last manual refresh: Jun 2, 2026
+// Live fetch: set APPS_SCRIPT_URL below to the deployed Apps Script URL.
+// While null, the baked-in constants below are used.
 // ═══════════════════════════════════════════════════════════════════
 const DATA_REFRESHED = 'Jun 2, 2026';
+const APPS_SCRIPT_URL = null; // e.g. 'https://script.google.com/macros/s/ABC.../exec'
 
 const BDMS = [
     { id:'ed',    name:'Ed Lundberg',      initials:'EL', territory:'Ohio · West Virginia' },
@@ -757,6 +859,9 @@ const CATEGORIES_2025 = [
     { name:'Website Fees',           amount:9548  },
     { name:'Promo Items',            amount:8335  },
 ];
+
+// 2026 annual budgets (from approved CNC advertising budget)
+const BUDGET_2026 = { memberships: 16945, sponsorships: 13948 };
 
 // 2025 per-BDM activity spend — from individual BDM tabs (field activity only)
 const BDM_DETAIL_2025 = {
@@ -877,40 +982,53 @@ const RED = '#C4242D', RED2 = '#E97A7F', RED3 = '#F5BBBE', DARK = '#352F31';
 // ═══════════════════════════════════════════════════════════════════
 
 function initExpense() {
-    // --- Monthly 2026 chart (memberships + sponsorships by month) ---
-    const monthly2026 = Array(7).fill(0); // Jan–Jul
-    MEMBERSHIPS_2026.forEach(m => {
-        if (m.month >= 1 && m.month <= 7) monthly2026[m.month - 1] += m.cost;
-    });
-    SPONSORSHIPS_2026.forEach(s => {
-        if (s.month >= 1 && s.month <= 7) monthly2026[s.month - 1] += s.cost;
-    });
+    // Compute totals from data (memberships = all entries including anticipated, full 2026 exposure)
+    const memActual  = MEMBERSHIPS_2026.reduce((a, m) => a + m.cost, 0);
+    const sponActual = SPONSORSHIPS_2026.reduce((a, s) => a + s.cost, 0);
+    const combined   = memActual + sponActual;
+    const memBudget  = BUDGET_2026.memberships;
+    const sponBudget = BUDGET_2026.sponsorships;
+    const combinedBudget = memBudget + sponBudget;
+
+    function kpiCard(label, value, variance, sub) {
+        const over = variance !== null && variance > 0;
+        const under = variance !== null && variance <= 0;
+        const absDelta = variance !== null ? Math.abs(variance) : 0;
+        const valueClass = over ? 'kpi-value mono red' : (under ? 'kpi-value mono green' : 'kpi-value mono');
+        const deltaHtml = variance !== null
+            ? `<div class="kpi-delta ${over ? 'delta-over' : 'delta-under'}">${over ? '▲' : '▼'} ${fmt$(absDelta)} ${over ? 'over' : 'under'} budget</div>`
+            : `<div class="kpi-sub">${esc(sub)}</div>`;
+        return `<div class="kpi"><div class="kpi-label">${esc(label)}</div><div class="${valueClass}">${fmt$(value)}</div>${deltaHtml}</div>`;
+    }
+
+    const kpisEl = $id('expense-kpis');
+    if (kpisEl) {
+        kpisEl.innerHTML =
+            kpiCard('2026 Memberships',    memActual,  memActual  - memBudget,      '') +
+            kpiCard('2026 Sponsorships',   sponActual, sponActual - sponBudget,     '') +
+            kpiCard('2026 Combined Spend', combined,   combined   - combinedBudget, '') +
+            `<div class="kpi"><div class="kpi-label">Events Attended</div><div class="kpi-value mono">${EVENTS_2026.length}</div><div class="kpi-sub">Jan – Jun 2026</div></div>`;
+    }
+
+    // Monthly 2026 bar chart
+    const monthly2026 = Array(7).fill(0);
+    MEMBERSHIPS_2026.forEach(m => { if (m.month >= 1 && m.month <= 7) monthly2026[m.month-1] += m.cost; });
+    SPONSORSHIPS_2026.forEach(s => { if (s.month >= 1 && s.month <= 7) monthly2026[s.month-1] += s.cost; });
     mkChart('chart-monthly2026', {
         type: 'bar',
         data: {
             labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'],
-            datasets: [{
-                label: 'Charges ($)',
-                data: monthly2026,
-                backgroundColor: monthly2026.map((v,i) =>
-                    i < 5 ? RED : 'rgba(196,36,45,0.35)'
-                ),
-                borderRadius: 2,
-            }]
+            datasets: [{ label: 'Charges', data: monthly2026,
+                backgroundColor: monthly2026.map((_,i) => i < 5 ? RED : 'rgba(196,36,45,0.35)'),
+                borderRadius: 2 }]
         },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false },
-                tooltip: { callbacks: { label: ctx => ' ' + fmt$(ctx.parsed.y) } }
-            },
-            scales: {
-                y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: '#F0F0F0' } },
-                x: { grid: { display: false } }
-            }
+        options: { responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx=>' '+fmt$(ctx.parsed.y)}} },
+            scales: { y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'},grid:{color:'#F0F0F0'}}, x:{grid:{display:false}} }
         }
     });
 
-    // --- 2025 Historical chart ---
+    // 2025 historical line chart — black line, turns red per segment when actual > budget
     mkChart('chart-hist2025', {
         type: 'line',
         data: {
@@ -919,8 +1037,20 @@ function initExpense() {
                 {
                     label: '2025 Actual',
                     data: HIST_2025.actual,
-                    borderColor: RED, backgroundColor: 'rgba(196,36,45,0.08)',
+                    borderColor: DARK,
+                    backgroundColor: 'rgba(26,26,26,0.04)',
                     fill: true, tension: 0.3, pointRadius: 3, borderWidth: 2,
+                    segment: {
+                        borderColor: ctx => {
+                            const bgt = HIST_2025.budget[ctx.p0DataIndex];
+                            return (ctx.p0.parsed.y > bgt || ctx.p1.parsed.y > bgt) ? RED : DARK;
+                        },
+                        backgroundColor: ctx => {
+                            const bgt = HIST_2025.budget[ctx.p0DataIndex];
+                            return (ctx.p0.parsed.y > bgt || ctx.p1.parsed.y > bgt)
+                                ? 'rgba(196,36,45,0.08)' : 'rgba(26,26,26,0.03)';
+                        },
+                    },
                 },
                 {
                     label: '2025 Budget',
@@ -930,51 +1060,35 @@ function initExpense() {
                 }
             ]
         },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
-                tooltip: { callbacks: { label: ctx => ' ' + fmt$(ctx.parsed.y) } }
-            },
-            scales: {
-                y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: '#F0F0F0' } },
-                x: { grid: { display: false } }
-            }
+        options: { responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{position:'bottom',labels:{boxWidth:12,padding:16}},
+                tooltip:{callbacks:{label:ctx=>' '+fmt$(ctx.parsed.y)}} },
+            scales: { y:{ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'},grid:{color:'#F0F0F0'}}, x:{grid:{display:false}} }
         }
     });
 
-    // --- BDM 2026 spend bar ---
-    const memMap = memByBDM();
+    // BDM 2026 spend bar
+    const memMap  = memByBDM();
     const sponMap = sponsorByBDM();
-    const bdmRows = BDMS.map(b => ({
-        name: b.name,
-        mem: memMap[b.id] || 0,
-        spon: sponMap[b.id] || 0,
-    })).filter(r => r.mem + r.spon > 0).sort((a,b) => (b.mem+b.spon) - (a.mem+a.spon));
-
+    const bdmRows = BDMS.map(b => ({ name:b.name, mem:memMap[b.id]||0, spon:sponMap[b.id]||0 }))
+        .filter(r => r.mem+r.spon > 0).sort((a,b) => (b.mem+b.spon)-(a.mem+a.spon));
     mkChart('chart-bdm2026', {
         type: 'bar',
         data: {
             labels: bdmRows.map(r => r.name.split(' ')[0]),
             datasets: [
-                { label: 'Memberships', data: bdmRows.map(r => r.mem),  backgroundColor: RED,  borderRadius: 2 },
-                { label: 'Sponsorships',data: bdmRows.map(r => r.spon), backgroundColor: RED2, borderRadius: 2 },
+                { label:'Memberships',  data:bdmRows.map(r=>r.mem),  backgroundColor:RED,  borderRadius:2 },
+                { label:'Sponsorships', data:bdmRows.map(r=>r.spon), backgroundColor:RED2, borderRadius:2 },
             ]
         },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
-                tooltip: { callbacks: { label: ctx => ' ' + fmt$(ctx.parsed.y) } }
-            },
-            scales: {
-                x: { stacked: true, grid: { display: false } },
-                y: { stacked: true, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }, grid: { color: '#F0F0F0' } }
-            }
+        options: { responsive:true, maintainAspectRatio:false,
+            plugins: { legend:{position:'bottom',labels:{boxWidth:12,padding:16}},
+                tooltip:{callbacks:{label:ctx=>' '+fmt$(ctx.parsed.y)}} },
+            scales: { x:{stacked:true,grid:{display:false}}, y:{stacked:true,ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k'},grid:{color:'#F0F0F0'}} }
         }
     });
 
-    // --- Category bars (CSS) ---
+    // 2025 category bars (CSS)
     const catEl = $id('cat-bars');
     if (catEl) {
         const max = CATEGORIES_2025[0].amount;
@@ -986,24 +1100,20 @@ function initExpense() {
             </div>`).join('');
     }
 
-    // --- BDM detail table ---
+    // BDM detail table
     const evtMap = eventCountByBDM();
-    const tbody = $id('expense-bdm-tbody');
+    const tbody  = $id('expense-bdm-tbody');
     if (tbody) {
-        const rows = BDMS.map(b => {
-            const m = memMap[b.id] || 0;
-            const s = sponMap[b.id] || 0;
-            const e = evtMap[b.id] || 0;
-            return { b, m, s, e, total: m+s };
-        }).sort((a,b) => b.total - a.total);
-
-        tbody.innerHTML = rows.map(({b,m,s,e,total}) => `<tr>
+        tbody.innerHTML = BDMS.map(b => {
+            const m = memMap[b.id]||0, s = sponMap[b.id]||0, e = evtMap[b.id]||0;
+            return { b, m, s, e, total:m+s };
+        }).sort((a,b) => b.total-a.total).map(({b,m,s,e,total}) => `<tr>
             <td class="name">${esc(b.name)}</td>
             <td style="color:var(--text-dim);font-size:12px;">${esc(b.territory)}</td>
             <td class="num">${m ? fmt$(m) : '—'}</td>
             <td class="num">${s ? fmt$(s) : '—'}</td>
             <td class="num">${total ? fmt$(total) : '—'}</td>
-            <td class="num">${e || '—'}</td>
+            <td class="num">${e||'—'}</td>
         </tr>`).join('');
     }
 
@@ -1011,157 +1121,399 @@ function initExpense() {
     if (f) f.textContent = `Data as of ${DATA_REFRESHED} · Source: BDM Memberships/Sponsorships 2026 + CNC Advertising BDM Report 2025 · The Knowing Agency`;
 }
 
-function initStatus() {
-    const evtMap = eventCountByBDM();
-    const memMap = memByBDM();
-    const grid = $id('status-grid');
-    if (!grid) return;
-
-    grid.innerHTML = BDMS.map(b => {
-        const evts = evtMap[b.id] || 0;
-        const mem  = memMap[b.id] || 0;
-        const sCls = statusClass(evts);
-        const [sLbl, sBadge] = statusLabel(evts);
-        const lastEvt = [...EVENTS_2026].filter(e => e.bdm === b.id).sort((a,z) => z.date.localeCompare(a.date))[0];
-        const lastDate = lastEvt ? fmtDate(lastEvt.date) : '—';
-
-        return `<div class="status-card ${sCls}" onclick="showPage('drilldown', null, '${b.id}')">
-            <div class="sc-avatar">${esc(b.initials)}</div>
-            <div class="sc-name">${esc(b.name)}</div>
-            <div class="sc-territory">${esc(b.territory)}</div>
-            <div class="sc-stats">
-                <div class="sc-stat">
-                    <div class="sc-stat-val">${evts}</div>
-                    <div class="sc-stat-lbl">Events</div>
-                </div>
-                <div class="sc-stat-divider"></div>
-                <div class="sc-stat">
-                    <div class="sc-stat-val">${mem ? fmt$(mem) : '—'}</div>
-                    <div class="sc-stat-lbl">Memberships</div>
-                </div>
-            </div>
-            <div class="sc-footer">
-                <span class="badge ${sBadge}">${sLbl}</span>
-                <span class="sc-drill">Last: ${esc(lastDate)} →</span>
-            </div>
-        </div>`;
-    }).join('');
-
-    const f = $id('footer-status');
-    if (f) f.textContent = `Data as of ${DATA_REFRESHED} · Click any card to drill down · The Knowing Agency`;
+function sbTab(btn, tabId) {
+    btn.closest('.sb-panel').querySelectorAll('.sb-tab').forEach(t => t.classList.remove('active'));
+    btn.closest('.sb-panel').querySelectorAll('.sb-tab-content').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    $id(tabId).classList.add('active');
 }
 
-let currentBDM = 'shawn';
+function initStatus() {
+    const evtMap  = eventCountByBDM();
+    const memMap  = memByBDM();
+    const sponMap = sponsorByBDM();
+    const today   = new Date('2026-06-03');
 
-function initDrilldown(bdmId) {
-    if (bdmId) currentBDM = bdmId;
+    // Compute per-BDM data
+    const bdmData = BDMS.map(b => {
+        const evts  = evtMap[b.id]  || 0;
+        const mem   = memMap[b.id]  || 0;
+        const spon  = sponMap[b.id] || 0;
+        const total = mem + spon;
+        const [sLbl, sBadge, sCls] = statusLabel(evts).concat([statusClass(evts)]);
+        const lastEvt = [...EVENTS_2026].filter(e => e.bdm === b.id).sort((a,z) => z.date.localeCompare(a.date))[0];
+        const lastDate = lastEvt ? lastEvt.date : null;
+        const daysSince = lastDate ? Math.floor((today - new Date(lastDate + 'T12:00:00')) / 86400000) : 999;
+        const costPerEvent = evts > 0 && total > 0 ? total / evts : Infinity;
+        return { b, evts, mem, spon, total, sLbl, sBadge, sCls, lastDate, daysSince, costPerEvent };
+    });
 
-    // Render tiles
+    // Sort for cards: status tier → events desc → spend asc
+    const tierOrder = { 's-active':0, 's-building':1, 's-light':2, 's-quiet':3 };
+    const sorted = [...bdmData].sort((a, b) => {
+        const td = tierOrder[a.sCls] - tierOrder[b.sCls];
+        if (td !== 0) return td;
+        if (b.evts !== a.evts) return b.evts - a.evts;
+        return a.total - b.total;
+    });
+
+    // Identify badge winners
+    const maxEvts  = Math.max(...bdmData.map(d => d.evts));
+    const minCPE   = Math.min(...bdmData.filter(d => d.costPerEvent < Infinity).map(d => d.costPerEvent));
+    const fireId   = bdmData.find(d => d.evts === maxEvts)?.b.id;
+    const crownId  = bdmData.find(d => d.costPerEvent === minCPE)?.b.id;
+
+    // Render cards
+    const grid = $id('status-grid');
+    if (grid) {
+        grid.innerHTML = sorted.map(({ b, evts, mem, sCls, sBadge, sLbl, lastDate }) => {
+            const emoji = (b.id === fireId ? ' 🔥' : '') + (b.id === crownId ? ' 👑' : '');
+            return `<div class="status-card ${sCls}" onclick="showPage('drilldown', null, '${b.id}')">
+                <div class="sc-top">
+                    <div class="photo-placeholder">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                    </div>
+                    <div class="sc-top-info">
+                        <div class="sc-name">${esc(b.name)}${emoji ? `<span class="sc-emoji">${emoji}</span>` : ''}</div>
+                        <div class="sc-territory">${esc(b.territory)}</div>
+                    </div>
+                </div>
+                <div class="sc-stats">
+                    <div class="sc-stat"><div class="sc-stat-val">${evts}</div><div class="sc-stat-lbl">Events</div></div>
+                    <div class="sc-stat-divider"></div>
+                    <div class="sc-stat"><div class="sc-stat-val">${mem ? fmt$(mem) : '—'}</div><div class="sc-stat-lbl">Memberships</div></div>
+                </div>
+                <div class="sc-footer">
+                    <span class="badge ${sBadge}">${sLbl}</span>
+                    <span class="sc-drill">Last: ${lastDate ? esc(fmtDate(lastDate)) : '—'} →</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── Tab 1: Status Distribution donut + name groups ──
+    const counts = { active:0, building:0, light:0, quiet:0 };
+    bdmData.forEach(d => {
+        if (d.sCls === 's-active')   counts.active++;
+        else if (d.sCls === 's-building') counts.building++;
+        else if (d.sCls === 's-light')    counts.light++;
+        else counts.quiet++;
+    });
+    mkChart('chart-status-donut', {
+        type: 'doughnut',
+        data: {
+            labels: ['Active (5+ events)','Building (2–4)','Light (1)','Quiet (0)'],
+            datasets: [{ data:[counts.active,counts.building,counts.light,counts.quiet],
+                backgroundColor:['#2E7D32','#D97706','#1565C0','#D0D0D0'], borderWidth:0 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'65%',
+            plugins:{ legend:{position:'bottom',labels:{boxWidth:10,padding:10,font:{size:11}}} } }
+    });
+    const namesEl = $id('sb-t1-names');
+    if (namesEl) {
+        const groups = [
+            { label:'Active', dot:'#2E7D32',  cls:'s-active'   },
+            { label:'Building', dot:'#D97706', cls:'s-building' },
+            { label:'Light',  dot:'#1565C0',  cls:'s-light'    },
+            { label:'Quiet',  dot:'#D0D0D0',  cls:'s-quiet'    },
+        ];
+        namesEl.innerHTML = groups.map(g => {
+            const names = bdmData.filter(d => d.sCls === g.cls).map(d => d.b.name.split(' ')[0]);
+            if (!names.length) return '';
+            return `<div class="sb-group">
+                <div class="sb-group-label"><div class="sb-group-dot" style="background:${g.dot}"></div>${g.label} — ${names.length}</div>
+                <div class="sb-names">${names.map(n => `<span class="sb-name-tag">${esc(n)}</span>`).join('')}</div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── Tab 2: F1 Rankings (by YTD events) ──
+    const ranked = [...bdmData].sort((a,b) => b.evts - a.evts);
+    const top3 = ranked.slice(0,3);
+    const podiumColors = ['p-gold','p-silver','p-bronze'];
+    const podiumHeights = [100,72,56];
+    const f1El = $id('sb-t2-inner');
+    if (f1El) {
+        const podiumHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex-shrink:0;width:220px;">
+            <div style="display:flex;align-items:flex-end;gap:4px;width:100%;height:130px;margin-bottom:8px;">
+                ${[top3[1],top3[0],top3[2]].map((d,i) => {
+                    const h = [podiumHeights[1],podiumHeights[0],podiumHeights[2]][i];
+                    const cls = [podiumColors[1],podiumColors[0],podiumColors[2]][i];
+                    const pos = [2,1,3][i];
+                    return d ? `<div class="podium-col">
+                        <div class="podium-name">${esc(d.b.name.split(' ')[0])}</div>
+                        <div class="podium-val">${d.evts} evts</div>
+                        <div class="podium-block ${cls}" style="height:${h}px;">${pos}</div>
+                    </div>` : '<div class="podium-col"></div>';
+                }).join('')}
+            </div>
+            <div style="font-size:10px;color:var(--text-dim);letter-spacing:0.08em;text-transform:uppercase;">YTD Events</div>
+        </div>`;
+        const listHtml = `<div class="f1-list">${ranked.map((d,i) => `
+            <div class="f1-row">
+                <div class="f1-pos">${i+1}</div>
+                <div class="f1-name">${esc(d.b.name)}</div>
+                <div class="f1-val">${d.evts}</div>
+                <div class="f1-gap">${i===0 ? 'leader' : `−${ranked[0].evts - d.evts}`}</div>
+            </div>`).join('')}</div>`;
+        f1El.innerHTML = podiumHtml + listHtml;
+    }
+
+    // ── Tab 3: Spend Analytics ──
+    const withSpend = bdmData.filter(d => d.total > 0);
+    const avgSpend  = withSpend.length ? withSpend.reduce((a,d)=>a+d.total,0) / withSpend.length : 0;
+    const withCPE   = bdmData.filter(d => d.costPerEvent < Infinity);
+    const avgCPE    = withCPE.length ? withCPE.reduce((a,d)=>a+d.costPerEvent,0) / withCPE.length : 0;
+    const efficient = withCPE.sort((a,b) => a.costPerEvent - b.costPerEvent)[0];
+    const topSpend  = [...bdmData].sort((a,b) => b.total - a.total)[0];
+    const t3El = $id('sb-t3-inner');
+    if (t3El) {
+        t3El.innerHTML = `
+        <div style="flex-shrink:0;width:180px;">
+            <div class="spend-stat-big">
+                <div class="spend-stat-label">Avg Spend / BDM</div>
+                <div class="spend-stat-val">${fmt$(avgSpend)}</div>
+            </div>
+            <div class="spend-stat-big">
+                <div class="spend-stat-label">Avg Cost / Event</div>
+                <div class="spend-stat-val">${avgCPE > 0 ? fmt$(avgCPE) : '—'}</div>
+            </div>
+        </div>
+        <div style="flex:1;">
+            <div class="callout-cards">
+                <div class="callout-card callout-green">
+                    <div class="callout-title">Most Efficient 👑</div>
+                    <div class="callout-name">${efficient ? esc(efficient.b.name) : '—'}</div>
+                    <div class="callout-sub">${efficient ? fmt$(efficient.costPerEvent)+' / event · '+efficient.evts+' events' : ''}</div>
+                </div>
+                <div class="callout-card callout-amber">
+                    <div class="callout-title">Highest Spend</div>
+                    <div class="callout-name">${topSpend ? esc(topSpend.b.name) : '—'}</div>
+                    <div class="callout-sub">${topSpend ? fmt$(topSpend.total)+' total' : ''}</div>
+                </div>
+            </div>
+            <table style="width:100%;font-size:12px;border-collapse:collapse;">
+                <thead><tr>
+                    <th style="text-align:left;padding:6px 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);border-bottom:1px solid var(--border);">#</th>
+                    <th style="text-align:left;padding:6px 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);border-bottom:1px solid var(--border);">BDM</th>
+                    <th style="text-align:right;padding:6px 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);border-bottom:1px solid var(--border);">Total</th>
+                    <th style="text-align:right;padding:6px 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);border-bottom:1px solid var(--border);">Events</th>
+                    <th style="text-align:right;padding:6px 8px;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);border-bottom:1px solid var(--border);">$/Event</th>
+                </tr></thead>
+                <tbody>${[...bdmData].sort((a,b)=>b.total-a.total).map((d,i)=>`<tr>
+                    <td style="padding:6px 8px;color:var(--text-dim);">${i+1}</td>
+                    <td style="padding:6px 8px;font-weight:500;">${esc(d.b.name)}</td>
+                    <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;">${d.total ? fmt$(d.total) : '—'}</td>
+                    <td style="padding:6px 8px;text-align:right;">${d.evts||'—'}</td>
+                    <td style="padding:6px 8px;text-align:right;font-family:'DM Mono',monospace;">${d.costPerEvent < Infinity ? fmt$(d.costPerEvent) : '—'}</td>
+                </tr>`).join('')}</tbody>
+            </table>
+        </div>`;
+    }
+
+    // ── Tab 4: Activity ──
+    const last30 = bdmData.filter(d => d.daysSince <= 30);
+    const mostRecent = bdmData.filter(d => d.lastDate).sort((a,b) => a.daysSince - b.daysSince);
+    const t4El = $id('sb-t4-inner');
+    if (t4El) {
+        t4El.innerHTML = `
+        <div class="act-summary">
+            <div class="act-stat"><div class="act-stat-val">${EVENTS_2026.filter(e=>{ const d=new Date(e.date+'T12:00:00'); return (today-d)/86400000<=30; }).length}</div><div class="act-stat-lbl">Events last 30 days</div></div>
+            <div class="act-stat"><div class="act-stat-val">${last30.length}</div><div class="act-stat-lbl">Active BDMs (30d)</div></div>
+            <div class="act-stat"><div class="act-stat-val">${mostRecent.length ? esc(fmtDate(mostRecent[0].lastDate)) : '—'}</div><div class="act-stat-lbl">Most recent event</div></div>
+        </div>
+        <div style="flex:1;">
+            ${mostRecent.map(d => {
+                const dot = d.daysSince<=7 ? 'act-dot-green' : d.daysSince<=30 ? 'act-dot-amber' : 'act-dot-red';
+                const ago = d.daysSince===0 ? 'today' : d.daysSince===1 ? '1 day ago' : `${d.daysSince} days ago`;
+                return `<div class="act-row">
+                    <div class="act-dot ${dot}"></div>
+                    <div class="act-name">${esc(d.b.name)}</div>
+                    <div class="act-date">${esc(fmtDate(d.lastDate))}</div>
+                    <div class="act-days" style="color:${d.daysSince<=7?'var(--green)':d.daysSince<=30?'#D97706':'var(--red)'};">${ago}</div>
+                </div>`;
+            }).join('')}
+            ${bdmData.filter(d => !d.lastDate).map(d =>
+                `<div class="act-row"><div class="act-dot" style="background:#E0E0E0;"></div><div class="act-name">${esc(d.b.name)}</div><div class="act-date" style="color:var(--text-dim);">No events recorded</div></div>`
+            ).join('')}
+        </div>`;
+    }
+
+    const f = $id('footer-status');
+    if (f) f.textContent = `Data as of ${DATA_REFRESHED} · 🔥 most events · 👑 best $/event ratio · Click any card to drill down · The Knowing Agency`;
+}
+
+let currentBDM  = 'shawn';
+let ddSortMode  = 'name';
+const TODAY_STR = '2026-06-03';
+
+function ddSort(mode, btn) {
+    ddSortMode = mode;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderDDTiles();
+}
+
+function renderDDTiles() {
+    const evtMap  = eventCountByBDM();
+    const memMap  = memByBDM();
+    const sponMap = sponsorByBDM();
+    const tierOrder = { 's-active':0, 's-building':1, 's-light':2, 's-quiet':3 };
+    let list = [...BDMS];
+
+    if (ddSortMode === 'name') {
+        list.sort((a,b) => a.name.split(' ').pop().localeCompare(b.name.split(' ').pop()));
+    } else if (ddSortMode === 'status') {
+        list.sort((a,b) => tierOrder[statusClass(evtMap[a.id]||0)] - tierOrder[statusClass(evtMap[b.id]||0)]);
+    } else if (ddSortMode === 'events') {
+        list.sort((a,b) => (evtMap[b.id]||0) - (evtMap[a.id]||0));
+    } else if (ddSortMode === 'spend') {
+        list.sort((a,b) => ((memMap[b.id]||0)+(sponMap[b.id]||0)) - ((memMap[a.id]||0)+(sponMap[a.id]||0)));
+    }
+
     const tilesEl = $id('bdm-tiles');
     if (tilesEl) {
-        tilesEl.innerHTML = BDMS.map(b => `
+        tilesEl.innerHTML = list.map(b => `
             <div class="bdm-tile ${b.id === currentBDM ? 'selected' : ''}"
                  onclick="initDrilldown('${b.id}')">${esc(b.name.split(' ')[0])}</div>
         `).join('');
     }
+}
+
+function ddTabSwitch(btn, tabId, panelId) {
+    document.querySelectorAll(`#${panelId} .dd-tab`).forEach(t => t.classList.remove('active'));
+    document.querySelectorAll(`#${panelId} .dd-tab-content`).forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    $id(tabId).classList.add('active');
+}
+
+function pillHtml(status) {
+    const map = {
+        charged:     ['ep-held',        'Held'],
+        anticipated: ['ep-scheduled',   'Scheduled'],
+        upcoming:    ['ep-upcoming',    'Upcoming'],
+        notapproved: ['ep-notapproved', 'Not Approved'],
+        dismissed:   ['ep-dismissed',   'Dismissed'],
+        cancelled:   ['ep-cancelled',   'Cancelled'],
+    };
+    const [cls, label] = map[status] || ['ep-nodata','No Data'];
+    return `<span class="evt-pill ${cls}">${label}</span>`;
+}
+
+function initDrilldown(bdmId) {
+    if (bdmId) currentBDM = bdmId;
+    renderDDTiles();
 
     const b = bdmObj(currentBDM);
     if (!b) return;
 
-    // Header
     const header = $id('dd-header');
     if (header) header.innerHTML = `
         <div class="drilldown-name">${esc(b.name)}</div>
         <div class="drilldown-territory">${esc(b.territory)}</div>
     `;
 
-    const evts = EVENTS_2026.filter(e => e.bdm === currentBDM);
-    const mems = MEMBERSHIPS_2026.filter(m => m.bdm === currentBDM);
+    const evts  = EVENTS_2026.filter(e => e.bdm === currentBDM).sort((a,z) => a.date.localeCompare(z.date));
+    const mems  = MEMBERSHIPS_2026.filter(m => m.bdm === currentBDM);
     const spons = SPONSORSHIPS_2026.filter(s => s.bdm === currentBDM);
-    const memTotal = mems.reduce((a,m) => a + m.cost, 0);
-    const sponTotal = spons.reduce((a,s) => a + s.cost, 0);
-    const hist = BDM_DETAIL_2025[currentBDM];
-    const hist2025Total = hist ? Object.values(hist).reduce((a,v)=>a+v,0) : 0;
+    const memTotal  = mems.reduce((a,m) => a+m.cost, 0);
+    const sponTotal = spons.reduce((a,s) => a+s.cost, 0);
 
-    // KPIs
+    // KPIs — 2026 only
     const kpisEl = $id('dd-kpis');
     if (kpisEl) kpisEl.innerHTML = `
-        <div class="kpi">
-            <div class="kpi-label">Events 2026</div>
-            <div class="kpi-value">${evts.length}</div>
-            <div class="kpi-sub">Jan–Jun 2026</div>
-        </div>
-        <div class="kpi">
-            <div class="kpi-label">Memberships 2026</div>
-            <div class="kpi-value mono">${mems.length > 0 ? fmt$(memTotal) : '—'}</div>
-            <div class="kpi-sub">${mems.length} association${mems.length!==1?'s':''}</div>
-        </div>
-        <div class="kpi">
-            <div class="kpi-label">Sponsorships 2026</div>
-            <div class="kpi-value mono">${spons.length > 0 ? fmt$(sponTotal) : '—'}</div>
-            <div class="kpi-sub">${spons.length} sponsorship${spons.length!==1?'s':''}</div>
-        </div>
-        <div class="kpi">
-            <div class="kpi-label">2025 Activity Spend</div>
-            <div class="kpi-value mono">${hist2025Total > 0 ? fmt$(hist2025Total) : '—'}</div>
-            <div class="kpi-sub">Events, meals, meetings</div>
-        </div>
+        <div class="kpi"><div class="kpi-label">Events 2026</div>
+            <div class="kpi-value mono">${evts.length || '—'}</div>
+            <div class="kpi-sub">Jan–Jun 2026</div></div>
+        <div class="kpi"><div class="kpi-label">Memberships 2026</div>
+            <div class="kpi-value mono">${mems.length ? fmt$(memTotal) : '—'}</div>
+            <div class="kpi-sub">${mems.length} association${mems.length!==1?'s':''}</div></div>
+        <div class="kpi"><div class="kpi-label">Sponsorships 2026</div>
+            <div class="kpi-value mono">${spons.length ? fmt$(sponTotal) : '—'}</div>
+            <div class="kpi-sub">${spons.length} sponsorship${spons.length!==1?'s':''}</div></div>
+        <div class="kpi"><div class="kpi-label">Total 2026 Spend</div>
+            <div class="kpi-value mono">${memTotal+sponTotal ? fmt$(memTotal+sponTotal) : '—'}</div>
+            <div class="kpi-sub">Memberships + sponsorships</div></div>
     `;
 
-    // Panels
     const panels = $id('dd-panels');
     if (!panels) return;
 
-    // Events list
-    const evtHtml = evts.length ? evts.sort((a,z) => a.date.localeCompare(z.date)).map(e => `
-        <div class="mini-row">
-            <div class="mini-row-meta">${fmtDate(e.date)}</div>
-            <div class="mini-row-name">${esc(e.name)}</div>
-            ${e.org ? `<div class="mini-row-meta">${esc(e.org)}</div>` : ''}
-        </div>`).join('') : `<div class="no-data">No events tracked for ${esc(b.name)} in 2026.</div>`;
+    // 2026 events tab
+    const evtRows = evts.length
+        ? evts.map(e => {
+            const status = e.date <= TODAY_STR ? 'charged' : 'upcoming';
+            return `<div class="mini-row">
+                <div class="mini-row-meta">${fmtDate(e.date)}</div>
+                <div class="mini-row-name">${esc(e.name)}</div>
+                ${e.org ? `<div class="mini-row-meta">${esc(e.org)}</div>` : ''}
+                <div>${pillHtml(status)}</div>
+            </div>`;
+        }).join('')
+        : `<div class="no-data" style="padding:32px;text-align:center;">
+               <div style="font-size:24px;margin-bottom:8px;">📋</div>
+               <div style="font-weight:600;">No events recorded for ${esc(b.name)} in 2026</div>
+               <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Events will appear here once tracked in the source spreadsheet</div>
+           </div>`;
 
-    // Memberships list
-    const memHtml = mems.length ? mems.map(m => `
-        <div class="mini-row">
-            <div class="mini-row-name">${esc(m.assoc)}</div>
-            <div class="mini-row-meta">${monthName(m.month)}</div>
-            <div class="mini-row-val">${fmtDec(m.cost)}</div>
-        </div>`).join('') : `<div class="no-data">No memberships tracked.</div>`;
-
-    // 2025 category breakdown
+    // 2025 category breakdown tab
+    const hist = BDM_DETAIL_2025[currentBDM];
     let hist2025Html = '';
     if (hist) {
         const cats = [
-            ['Client Events', hist.events], ['Client Meals', hist.meals],
-            ['Meetings', hist.meetings],    ['Sponsorships', hist.sponsorships],
-            ['Outings', hist.outings],      ['Customer Gifts', hist.gifts],
-        ].filter(([,v]) => v > 0).sort((a,b) => b[1]-a[1]);
+            ['Client Events',hist.events],['Client Meals',hist.meals],
+            ['Meetings',hist.meetings],['Sponsorships',hist.sponsorships],
+            ['Outings',hist.outings],['Customer Gifts',hist.gifts],
+        ].filter(([,v]) => v>0).sort((a,b) => b[1]-a[1]);
         const maxV = cats.length ? cats[0][1] : 1;
-        hist2025Html = cats.map(([n,v]) => `
+        hist2025Html = `<div class="exp-bar-list">${cats.map(([n,v]) => `
             <div class="exp-bar-row">
                 <div class="exp-bar-label" style="width:130px;">${esc(n)}</div>
                 <div class="exp-bar-track"><div class="exp-bar-fill" style="width:${Math.round(v/maxV*100)}%"></div></div>
                 <div class="exp-bar-val">${fmt$(v)}</div>
-            </div>`).join('');
+            </div>`).join('')}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:14px;">Source: CNC Advertising BDM Reporting 2025 — field activity only, excludes company-wide advertising</div>`;
     } else {
-        hist2025Html = `<div class="no-data">No 2025 detail data available.</div>`;
+        hist2025Html = `<div class="no-data">No 2025 detail data available for ${esc(b.name)}.</div>`;
     }
+
+    // Memberships list
+    const memHtml = mems.length
+        ? mems.map(m => `<div class="mini-row">
+            <div class="mini-row-name">${esc(m.assoc)}</div>
+            <div class="mini-row-meta">${monthName(m.month)}</div>
+            <span class="evt-pill ${m.status==='charged'?'ep-held':'ep-scheduled'}">${m.status==='charged'?'Charged':'Anticipated'}</span>
+            <div class="mini-row-val">${fmtDec(m.cost)}</div>
+          </div>`).join('')
+        : `<div class="no-data">No memberships tracked for ${esc(b.name)}.</div>`;
 
     panels.innerHTML = `
         <div>
             <div class="drilldown-panel" style="margin-bottom:14px;">
-                <div class="card-title">2026 Events Attended</div>
-                <div class="mini-list">${evtHtml}</div>
+                <div class="dd-tab-bar" id="dd-evt-tabs">
+                    <button class="dd-tab active" onclick="ddTabSwitch(this,'dd-tab-2026','dd-evt-tabs')">2026 Events</button>
+                    <button class="dd-tab" onclick="ddTabSwitch(this,'dd-tab-2025','dd-evt-tabs')">2025 Spend</button>
+                </div>
+                <div class="dd-tab-content active" id="dd-tab-2026">
+                    <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;">Status labels are defaults — no status tracked in source data yet.</div>
+                    <div class="mini-list">${evtRows}</div>
+                </div>
+                <div class="dd-tab-content" id="dd-tab-2025">${hist2025Html}</div>
             </div>
             <div class="drilldown-panel">
                 <div class="card-title">2026 Memberships</div>
                 <div class="mini-list">${memHtml}</div>
             </div>
         </div>
-        <div class="drilldown-panel">
-            <div class="card-title">2025 Activity Spend by Category</div>
-            <div class="exp-bar-list" style="margin-top:8px;">${hist2025Html}</div>
-            <div style="font-size:11px;color:var(--text-dim);margin-top:16px;">Source: CNC Advertising BDM Reporting 2025 (field activity costs only — excludes company-wide advertising)</div>
+        <div>
+            <div class="drilldown-panel">
+                <div class="card-title">Upcoming Events</div>
+                <div class="cal-placeholder">
+                    <div class="cal-placeholder-icon">📅</div>
+                    <div class="cal-placeholder-label">Calendar coming soon</div>
+                    <div class="cal-placeholder-sub">Upcoming events for ${esc(b.name)} will appear here once a live calendar feed is connected</div>
+                </div>
+            </div>
         </div>
     `;
 
@@ -1169,23 +1521,134 @@ function initDrilldown(bdmId) {
     if (f) f.textContent = `Data as of ${DATA_REFRESHED} · The Knowing Agency`;
 }
 
-function initEvents() {
+// Multi-column sort state: primary col, primary dir, secondary col, secondary dir
+let evtSort = { primary:'date', primaryDir:-1, secondary:null, secondaryDir:1 };
+
+function evtView(mode) {
+    $id('evt-list-view').style.display = mode === 'list' ? '' : 'none';
+    $id('evt-cal-view').style.display  = mode === 'cal'  ? '' : 'none';
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    $id(mode === 'list' ? 'evt-list-btn' : 'evt-cal-btn').classList.add('active');
+}
+
+function evtSortBy(col) {
+    if (evtSort.primary === col) {
+        evtSort.primaryDir *= -1;
+    } else {
+        evtSort.secondary    = evtSort.primary;
+        evtSort.secondaryDir = evtSort.primaryDir;
+        evtSort.primary      = col;
+        evtSort.primaryDir   = 1;
+    }
+    renderEventsTable();
+    // Update header indicators
+    document.querySelectorAll('#page-events th.sortable').forEach(th => {
+        th.classList.remove('sort-asc','sort-desc');
+        if (th.dataset.col === evtSort.primary) {
+            th.classList.add(evtSort.primaryDir === 1 ? 'sort-asc' : 'sort-desc');
+        }
+    });
+}
+
+function evtVal(e, col) {
+    if (col === 'date')    return e.date;
+    if (col === 'name')    return e.name.toLowerCase();
+    if (col === 'bdm')     return bdmName(e.bdm).toLowerCase();
+    if (col === 'org')     return (e.org || '').toLowerCase();
+    if (col === 'type')    return (e.type || '').toLowerCase();
+    if (col === 'expense') return 0;
+    return '';
+}
+
+function renderEventsTable() {
     const tbody = $id('events-tbody');
     if (!tbody) return;
-    const sorted = [...EVENTS_2026].sort((a,b) => a.date.localeCompare(b.date));
-    tbody.innerHTML = sorted.map(e => `<tr>
-        <td class="mono" style="color:var(--text);font-size:12px;">${esc(fmtDate(e.date))}</td>
+    const data = [...EVENTS_2026].sort((a,b) => {
+        const pa = evtVal(a, evtSort.primary), pb = evtVal(b, evtSort.primary);
+        const pcmp = pa < pb ? -1 : pa > pb ? 1 : 0;
+        if (pcmp !== 0) return pcmp * evtSort.primaryDir;
+        if (!evtSort.secondary) return 0;
+        const sa = evtVal(a, evtSort.secondary), sb = evtVal(b, evtSort.secondary);
+        const scmp = sa < sb ? -1 : sa > sb ? 1 : 0;
+        return scmp * evtSort.secondaryDir;
+    });
+    tbody.innerHTML = data.map(e => `<tr>
+        <td class="mono" style="color:var(--text);font-size:12px;white-space:nowrap;">${esc(fmtDate(e.date))}</td>
         <td class="name">${esc(e.name)}</td>
-        <td>${esc(bdmName(e.bdm))}</td>
-        <td style="color:var(--text-dim);">${esc(e.org || '—')}</td>
+        <td style="white-space:nowrap;">${esc(bdmName(e.bdm))}</td>
+        <td style="color:var(--text-dim);">${esc(e.org||'—')}</td>
         <td><span class="badge b-light">${esc(eventMonth(e.date))}</span></td>
+        <td class="num" style="color:var(--text-dim);">—</td>
     </tr>`).join('');
+}
+
+function initEvents() {
+    // Default: date descending (most recent first)
+    evtSort = { primary:'date', primaryDir:-1, secondary:null, secondaryDir:1 };
+    renderEventsTable();
+
+    // Wire sortable column headers
+    document.querySelectorAll('#page-events th.sortable').forEach(th => {
+        th.addEventListener('click', () => evtSortBy(th.dataset.col));
+    });
+    // Show default sort indicator
+    const dateHeader = document.querySelector('#page-events th[data-col="date"]');
+    if (dateHeader) dateHeader.classList.add('sort-desc');
+
+    const badge = $id('events-badge');
+    if (badge) badge.textContent = `${EVENTS_2026.length} Events · Jan–Jun 2026`;
+    const title = $id('events-card-title');
+    if (title) title.textContent = `All 2026 Events — BDM Field Activity`;
 
     const f = $id('footer-events');
-    if (f) f.textContent = `30 events Jan–Jun 2026 · Source: 2026 BDM Tracker · The Knowing Agency`;
+    if (f) f.textContent = `${EVENTS_2026.length} events Jan–Jun 2026 · Source: 2026 BDM Tracker · The Knowing Agency`;
 }
 
 function initMemberships() {
+    // Compute totals
+    const memActual   = MEMBERSHIPS_2026.reduce((a,m) => a+m.cost, 0);
+    const memCharged  = MEMBERSHIPS_2026.filter(m=>m.status==='charged').reduce((a,m)=>a+m.cost,0);
+    const memBudget   = BUDGET_2026.memberships;
+    const memVariance = memActual - memBudget;
+    const sponActual  = SPONSORSHIPS_2026.reduce((a,s) => a+s.cost, 0);
+    const sponBudget  = BUDGET_2026.sponsorships;
+    const sponVariance = sponActual - sponBudget;
+
+    // Projected EOY Variance: (actual charged / months elapsed) * 12 - full-year budget
+    const monthsElapsed = 5; // Jan–May charged
+    const projEOYRate   = monthsElapsed > 0 ? (memCharged / monthsElapsed) * 12 : 0;
+    const projEOYVar    = projEOYRate - memBudget;
+    const pendingCount  = MEMBERSHIPS_2026.filter(m=>m.status==='anticipated').length;
+
+    // KPI cards
+    const kpisEl = $id('mem-kpis');
+    if (kpisEl) {
+        const overMem  = memActual  > memBudget;
+        const overSpon = sponActual > sponBudget;
+        const projOver = projEOYVar > 0;
+        kpisEl.innerHTML = `
+            <div class="kpi">
+                <div class="kpi-label">Total Charged 2026</div>
+                <div class="kpi-value mono ${overMem?'red':'green'}">${fmt$(memActual)}</div>
+                <div class="kpi-delta ${overMem?'delta-over':'delta-under'}">${overMem?'▲':'▼'} ${fmt$(Math.abs(memVariance))} ${overMem?'over':'under'} budget</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Budgeted 2026</div>
+                <div class="kpi-value mono">${fmt$(memBudget)}</div>
+                <div class="kpi-sub">Full year memberships</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Sponsorships 2026</div>
+                <div class="kpi-value mono ${overSpon?'red':'green'}">${fmt$(sponActual)}</div>
+                <div class="kpi-delta ${overSpon?'delta-over':'delta-under'}">${overSpon?'▲':'▼'} ${fmt$(Math.abs(sponVariance))} ${overSpon?'over':'under'} budget</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Projected EOY Variance</div>
+                <div class="kpi-value mono ${projOver?'red':'green'}">${projOver?'+':''}${fmt$(projEOYVar)}</div>
+                <div class="kpi-sub">${pendingCount} membership${pendingCount!==1?'s':''} anticipated</div>
+            </div>`;
+    }
+
     // Pipeline grid
     const pipe = $id('mem-pipeline');
     if (pipe) {
@@ -1206,12 +1669,24 @@ function initMemberships() {
             <td>${esc(bdmName(m.bdm))}</td>
             <td class="num">${fmtDec(m.cost)}</td>
             <td>${esc(monthName(m.month))}</td>
-            <td><span class="badge ${m.status === 'charged' ? 'b-charged' : 'b-anticipated'}">${esc(m.status)}</span></td>
+            <td><span class="badge ${m.status==='charged'?'b-charged':'b-anticipated'}">${m.status==='charged'?'Charged':'Anticipated'}</span></td>
             <td style="font-size:12px;color:var(--text-dim);max-width:200px;">${esc(m.note||'')}</td>
         </tr>`).join('');
     }
 
-    // Sponsorships table
+    const tfoot = $id('mem-tfoot');
+    if (tfoot) {
+        const varSign = memVariance > 0 ? '–' : '+';
+        tfoot.innerHTML = `
+            <td colspan="2">Grand Total</td>
+            <td class="num ${memActual>memBudget?'over':'under'}">${fmt$(memActual)}</td>
+            <td colspan="3">Budget: ${fmt$(memBudget)} · Variance: ${varSign}${fmt$(Math.abs(memVariance))}</td>`;
+    }
+
+    // Sponsorships card title from variables
+    const sponTitle = $id('spon-card-title');
+    if (sponTitle) sponTitle.textContent = `Sponsorships 2026 — ${fmt$(sponActual)} Actual vs ${fmt$(sponBudget)} Budgeted`;
+
     const stbody = $id('sponsor-tbody');
     if (stbody) {
         stbody.innerHTML = SPONSORSHIPS_2026.map(s => `<tr>
@@ -1223,8 +1698,38 @@ function initMemberships() {
         </tr>`).join('');
     }
 
+    const sponFoot = $id('spon-tfoot');
+    if (sponFoot) {
+        const sVarSign = sponVariance > 0 ? '–' : '+';
+        sponFoot.innerHTML = `
+            <td colspan="2">Grand Total</td>
+            <td class="num ${sponActual>sponBudget?'over':'under'}">${fmt$(sponActual)}</td>
+            <td colspan="2">Budget: ${fmt$(sponBudget)} · Variance: ${sVarSign}${fmt$(Math.abs(sponVariance))}</td>`;
+    }
+
     const f = $id('footer-memberships');
     if (f) f.textContent = `Data as of ${DATA_REFRESHED} · Source: BDM Memberships/Yearly Sponsorships · The Knowing Agency`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LIVE DATA FETCH — replaces baked-in arrays when APPS_SCRIPT_URL is set
+// ═══════════════════════════════════════════════════════════════════
+async function loadLiveData() {
+    if (!APPS_SCRIPT_URL) return false;
+    try {
+        const res = await fetch(APPS_SCRIPT_URL);
+        if (!res.ok) return false;
+        const data = await res.json();
+        if (data.error) { console.warn('Apps Script error:', data.error); return false; }
+        MEMBERSHIPS_2026.splice(0, MEMBERSHIPS_2026.length, ...data.memberships);
+        SPONSORSHIPS_2026.splice(0, SPONSORSHIPS_2026.length, ...data.sponsorships);
+        EVENTS_2026.splice(0, EVENTS_2026.length, ...data.events);
+        window._liveRefreshed = data.refreshed;
+        return true;
+    } catch(e) {
+        console.warn('Live data fetch failed, using baked-in data:', e);
+        return false;
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1262,14 +1767,14 @@ function showPage(name, btn, bdmId) {
     }
 }
 
-function doLogin() {
+async function doLogin() {
     const u = $id('u').value.trim();
     const p = $id('p').value.trim();
     if (u === 'admin' && p === 'CNC_preview_26') {
         $id('login-screen').classList.add('hidden');
         $id('app').classList.add('visible');
-        $id('topbar-refresh').textContent = `· data: ${DATA_REFRESHED}`;
-        // Init first visible page
+        const live = await loadLiveData();
+        $id('topbar-refresh').textContent = `· data: ${live ? (window._liveRefreshed || 'live') : DATA_REFRESHED}`;
         initExpense();
         initializedPages.add('expense');
     } else {
