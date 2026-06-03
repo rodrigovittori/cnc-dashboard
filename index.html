@@ -1628,7 +1628,7 @@ function renderEventsTable() {
         <td class="name">${esc(e.name)}</td>
         <td style="white-space:nowrap;">${esc(bdmName(e.bdm))}</td>
         <td style="color:var(--text-dim);">${esc(e.org||'—')}</td>
-        <td><span class="badge b-light">${esc(eventMonth(e.date))}</span></td>
+        <td>${e.type ? `<span class="badge b-light">${esc(e.type)}</span>` : '<span style="color:var(--text-dim);">—</span>'}</td>
         <td class="num" style="color:var(--text-dim);">—</td>
     </tr>`).join('');
 }
