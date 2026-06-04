@@ -406,6 +406,121 @@
         .year-divider::before, .year-divider::after {
             content: ''; flex: 1; height: 1px; background: var(--border);
         }
+
+        /* ── HAMBURGER ─────────────────────────── */
+        .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:6px; background:none; border:none; margin-right:4px; }
+        .hamburger span { display:block; width:20px; height:2px; background:rgba(255,255,255,0.8); border-radius:1px; transition:all 0.2s; }
+        .sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:150; }
+        .sidebar-overlay.visible { display:block; }
+
+        /* ── RESPONSIVE ────────────────────────── */
+        @media (max-width: 1100px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .status-grid { grid-template-columns: repeat(2, 1fr); }
+            .pipeline-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .drilldown-grid { grid-template-columns: 1fr; }
+            .sb-tab-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .sb-tab { white-space: nowrap; }
+            .sb-tab-content.active { flex-direction: column; }
+            .sb-chart-wrap { width: 100%; }
+            .callout-cards { flex-direction: column; }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .sidebar {
+                position: fixed; left: -220px; top: 0; bottom: 0; z-index: 200;
+                transition: left 0.25s ease; box-shadow: 4px 0 16px rgba(0,0,0,0.12);
+            }
+            .sidebar.open { left: 0; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .survey-grid { grid-template-columns: 1fr; }
+            .pipeline-grid { grid-template-columns: repeat(3, 1fr); }
+            .page { padding: 16px; }
+            .topbar { padding: 0 12px; gap: 8px; }
+            .topbar-sep, .topbar-sub, .topbar-refresh { display: none; }
+            .topbar-name { font-size: 13px; }
+            .exp-bar-label { width: 110px; font-size: 11px; }
+            .podium-wrap { width: 160px; }
+        }
+
+        @media (max-width: 480px) {
+            .grid-4 { grid-template-columns: 1fr; }
+            .status-grid { grid-template-columns: 1fr; }
+            .pipeline-grid { grid-template-columns: repeat(2, 1fr); }
+            .topbar-actions { display: none; }
+            .bdm-tile { padding: 5px 10px; font-size: 11px; }
+            .kpi-value { font-size: 24px; }
+            .drilldown-name { font-size: 18px; }
+        }
+        /* ── DATA ROADMAP PAGE ──────────────────────────────── */
+        .maturity-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+        .maturity-col { border-radius:3px; overflow:hidden; border:1px solid var(--border); }
+        .maturity-col-header { padding:14px 16px; font-family:'Montserrat',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+        .maturity-col.m-current .maturity-col-header { background:var(--dark); color:#fff; }
+        .maturity-col.m-next    .maturity-col-header { background:#92400E; color:#fff; }
+        .maturity-col.m-future  .maturity-col-header { background:var(--green); color:#fff; }
+        .maturity-col-body { padding:16px; background:#fff; }
+        .maturity-item { display:flex; align-items:flex-start; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; }
+        .maturity-item:last-child { border-bottom:none; }
+        .maturity-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+        .m-current .maturity-dot { background:var(--dark); }
+        .m-next    .maturity-dot { background:#D97706; }
+        .m-future  .maturity-dot { background:var(--green); }
+        .maturity-sublabel { font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
+
+        .source-status-table { width:100%; border-collapse:collapse; }
+        .source-status-table th { text-align:left; padding:8px 12px; font-size:10px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-dim); border-bottom:2px solid var(--border); }
+        .source-status-table td { padding:10px 12px; border-bottom:1px solid var(--border); font-size:13px; vertical-align:top; }
+        .source-status-table tr:last-child td { border-bottom:none; }
+        .ss-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:2px; font-size:11px; font-weight:600; letter-spacing:0.04em; white-space:nowrap; }
+        .ss-connected { background:var(--green-bg); color:var(--green); }
+        .ss-missing   { background:var(--red-light); color:var(--red); }
+        .ss-unknown   { background:var(--amber-bg); color:var(--amber); }
+
+        .ri-placeholder { border:2px dashed var(--border); background:#FAFAFA; border-radius:3px; padding:20px; }
+        .ri-status-row { display:flex; align-items:center; gap:8px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+        .ri-status-dot { width:8px; height:8px; border-radius:50%; background:#D0D0D0; flex-shrink:0; }
+        .ri-section-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px; margin-top:14px; }
+        .ri-section-title:first-child { margin-top:0; }
+        .ri-item { font-size:13px; color:var(--text-secondary); padding:5px 0; border-bottom:1px solid var(--border); }
+        .ri-item:last-child { border-bottom:none; }
+        .ri-item::before { content:'→ '; color:var(--text-dim); }
+
+        .assoc-mockup { background:#FAFAFA; border:1px solid var(--border); border-radius:3px; overflow:hidden; }
+        .assoc-mockup-header { background:var(--dark); color:#fff; padding:14px 16px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:14px; }
+        .assoc-mockup-grid { display:grid; grid-template-columns:1fr 1fr; }
+        .assoc-field { padding:12px 16px; border-bottom:1px solid var(--border); }
+        .assoc-field:nth-child(odd) { border-right:1px solid var(--border); }
+        .assoc-field-label { font-size:10px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-dim); margin-bottom:4px; }
+        .assoc-field-val { font-size:13px; font-weight:500; color:var(--text); }
+        .assoc-field-val.not-captured { color:var(--text-dim); font-style:italic; font-weight:400; }
+
+        .strategic-q-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+        .sq-list { list-style:none; }
+        .sq-list li { padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; display:flex; gap:10px; align-items:flex-start; }
+        .sq-list li:last-child { border-bottom:none; }
+        .sq-num { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-dim); flex-shrink:0; padding-top:1px; }
+        .sq-blocker { font-size:13px; color:var(--text-secondary); padding:7px 0; border-bottom:1px solid var(--border); }
+        .sq-blocker:last-child { border-bottom:none; }
+        .sq-blocker::before { content:'✗ '; color:var(--red); font-weight:700; }
+
+        .outcome-fields { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-top:14px; }
+        .outcome-field { background:#fff; border:1px solid var(--border); border-radius:3px; padding:10px 12px; }
+        .outcome-field-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-secondary); margin-bottom:4px; }
+        .outcome-field-val { font-size:12px; color:var(--text-dim); font-style:italic; }
+
+        @media(max-width:900px) {
+            .maturity-grid { grid-template-columns:1fr; }
+            .strategic-q-grid { grid-template-columns:1fr; }
+            .assoc-mockup-grid { grid-template-columns:1fr; }
+            .assoc-field:nth-child(odd) { border-right:none; }
+        }
     </style>
 </head>
 <body>
@@ -440,7 +555,11 @@
 
 <!-- ── APP ────────────────────────────────────────────────── -->
 <div id="app">
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
     <div class="topbar">
+        <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
         <div class="topbar-logo">
             <img src="https://cncfoundations.com/wp-content/uploads/2022/10/CNC-Foundations-Website-Logo.png" alt="CNC" onerror="this.style.display='none'">
         </div>
@@ -467,6 +586,10 @@
                 <button class="sidebar-item" id="nav-events"      onclick="showPage('events', this)">Events Tracker</button>
                 <button class="sidebar-item" id="nav-memberships" onclick="showPage('memberships', this)">Memberships</button>
                 <button class="sidebar-item" id="nav-survey"      onclick="showPage('survey', this)">Post-Event Survey</button>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">Roadmap</div>
+                <button class="sidebar-item" id="nav-roadmap" onclick="showPage('roadmap', this)">Data Roadmap</button>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-label">Source Files</div>
@@ -624,6 +747,24 @@
                         <div style="font-size:12px;margin-top:6px;">Events pinned to calendar dates will display here once a live calendar feed is connected.</div>
                     </div>
                 </div>
+                <div class="card" style="border:2px dashed var(--border);background:#FAFAFA;">
+                    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+                        Event Outcome Tracking
+                        <span class="page-title-badge" style="background:#FEF3C7;color:#92400E;">Coming Soon</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;">Events are currently tracked by attendance only. Outcome data — what happened at each event — is not yet captured. The fields below represent the next layer of intelligence.</p>
+                    <div class="outcome-fields">
+                        <div class="outcome-field"><div class="outcome-field-label">Contacts Made</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Follow-ups Scheduled</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Opportunities Identified</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Strategic Introductions</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Post-Event Rating</div><div class="outcome-field-val">Via survey form</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">BDM Notes</div><div class="outcome-field-val">Not captured</div></div>
+                    </div>
+                    <div style="margin-top:14px;padding:10px 14px;background:var(--blue-bg);border-radius:3px;font-size:12px;color:var(--blue);line-height:1.6;">
+                        <strong>Path to capture:</strong> Post-event survey (already live) collects contacts made, rating, and notes. Connection to this dashboard is pending Apps Script deployment.
+                    </div>
+                </div>
                 <div class="data-footer" id="footer-events"></div>
             </div>
 
@@ -634,6 +775,10 @@
                     <span class="page-title-badge">2026</span>
                 </div>
 
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--amber-bg);border:1px solid #FDE68A;border-radius:3px;margin-bottom:16px;font-size:12px;color:var(--amber);line-height:1.6;">
+                    <span style="flex-shrink:0;font-size:15px;">⚠</span>
+                    <div><strong>Static data.</strong> This view uses manually maintained records. It will update automatically once a tab named <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:2px;font-size:11px;">2026 Tracking - Memberships</code> is added to <strong>BDM_Memberships_Yearly_Sponsorships_COPY</strong> with columns: Association · BDM · Annual Cost · Month of Renewal · Status · Notes.</div>
+                </div>
                 <div class="grid-4" id="mem-kpis"></div>
 
                 <div class="card">
@@ -705,7 +850,7 @@
                                 <div style="font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Auto-Triggers</div>
                             </div>
                         </div>
-                        <a class="cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform" target="_blank">Open Google Form →</a>
+                        <a class="cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSel6rxTnH8X0lZHk-UkdonzIlyzVt1v2i7giM08HqBAXkYHrw/viewform" target="_blank">Open Google Form →</a>
                     </div>
                     <div class="card">
                         <div class="card-title">Automation Triggers (n8n — Planned)</div>
@@ -738,9 +883,197 @@
                 </div>
                 <div class="card" style="margin-top:0;">
                     <div class="card-title">Live Form Preview</div>
-                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdOSlYk5vL2yWtuOhP3F5oTYrVt0_WsMtD7cPTHDUDiEQkOiw/viewform?embedded=true" width="100%" height="820" frameborder="0" style="border:1px solid var(--border);border-radius:3px;display:block;">Loading…</iframe>
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSel6rxTnH8X0lZHk-UkdonzIlyzVt1v2i7giM08HqBAXkYHrw/viewform?embedded=true" width="100%" height="820" frameborder="0" style="border:1px solid var(--border);border-radius:3px;display:block;">Loading…</iframe>
+                </div>
+                <div class="card">
+                    <div class="card-title">Recent Submissions</div>
+                    <div style="display:flex;align-items:center;gap:12px;padding:20px;background:#FAFAFA;border:1px dashed var(--border);border-radius:3px;">
+                        <div style="font-size:28px;">📊</div>
+                        <div>
+                            <div style="font-weight:600;font-size:13px;color:var(--text);margin-bottom:4px;">Submission history will appear here</div>
+                            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;">Once the Form Responses sheet is connected, past submissions will display in a searchable table — BDM name, event, date submitted, contacts made, and rating.</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="data-footer">Data as of Jun 2, 2026 · The Knowing Agency</div>
+            </div>
+
+            <!-- ══ PAGE: DATA ROADMAP ════════════════════════════════ -->
+            <div class="page" id="page-roadmap">
+                <div class="page-title">
+                    Data Roadmap
+                    <span class="page-title-badge">Strategic Context</span>
+                </div>
+
+                <div class="card" style="background:var(--dark);color:#fff;margin-bottom:4px;">
+                    <div style="font-family:'Montserrat',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px;">This dashboard reflects the data CNC currently captures.</div>
+                    <div style="font-size:13px;color:rgba(255,255,255,0.72);line-height:1.8;">The roadmap below reflects the business intelligence CNC wants. Each tier is a stage of measurement maturity — from spend visibility today to full relationship intelligence in the future.</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">CNC Measurement Maturity Roadmap</div>
+                    <div class="maturity-grid">
+                        <div class="maturity-col m-current">
+                            <div class="maturity-col-header">Current State — Today</div>
+                            <div class="maturity-col-body">
+                                <div class="maturity-sublabel">What CNC captures now</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Spend by BDM</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Membership costs</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Sponsorship costs</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Events attended</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Budget vs. actual</div>
+                            </div>
+                        </div>
+                        <div class="maturity-col m-next">
+                            <div class="maturity-col-header">Next State — Phase 2</div>
+                            <div class="maturity-col-body">
+                                <div class="maturity-sublabel">Requires post-event survey data</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Event outcomes</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Follow-up completion</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Contacts created</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Opportunities identified</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Association engagement scores</div>
+                            </div>
+                        </div>
+                        <div class="maturity-col m-future">
+                            <div class="maturity-col-header">Future State — Phase 3</div>
+                            <div class="maturity-col-body">
+                                <div class="maturity-sublabel">Requires CRM layer</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Relationship health</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Association ROI</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Referral attribution</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Revenue influence</div>
+                                <div class="maturity-item"><div class="maturity-dot"></div>Repeat engagement tracking</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+                            Relationship Intelligence
+                            <span class="page-title-badge" style="background:#FEF3C7;color:#92400E;">Future</span>
+                        </div>
+                        <div class="ri-placeholder">
+                            <div class="ri-status-row">
+                                <div class="ri-status-dot"></div>
+                                <div style="font-size:13px;color:var(--text-secondary);"><strong>Current Status:</strong> Not enough data captured</div>
+                            </div>
+                            <div class="ri-section-title">Required Inputs</div>
+                            <div class="ri-item">Event contacts</div>
+                            <div class="ri-item">Follow-up records</div>
+                            <div class="ri-item">Opportunities</div>
+                            <div class="ri-item">Referral sources</div>
+                            <div class="ri-item">Association engagement history</div>
+                            <div class="ri-section-title">Future Questions This Will Answer</div>
+                            <div class="ri-item">Which associations generate opportunities?</div>
+                            <div class="ri-item">Which relationships are strengthening?</div>
+                            <div class="ri-item">Which events create business outcomes?</div>
+                            <div class="ri-item">Which firms repeatedly engage CNC?</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+                            Association Profile
+                            <span class="page-title-badge" style="background:#FEF3C7;color:#92400E;">Mockup</span>
+                        </div>
+                        <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;">What a full association record would contain. Fields below reflect what needs to be captured to make this functional.</p>
+                        <div class="assoc-mockup">
+                            <div class="assoc-mockup-header">AGC Missouri</div>
+                            <div class="assoc-mockup-grid">
+                                <div class="assoc-field"><div class="assoc-field-label">Membership Cost</div><div class="assoc-field-val">$1,545 / yr</div></div>
+                                <div class="assoc-field"><div class="assoc-field-label">BDM</div><div class="assoc-field-val">Molly Dyer</div></div>
+                                <div class="assoc-field"><div class="assoc-field-label">Events Participated</div><div class="assoc-field-val">3 in 2026</div></div>
+                                <div class="assoc-field"><div class="assoc-field-label">Contacts Generated</div><div class="assoc-field-val not-captured">Not captured yet</div></div>
+                                <div class="assoc-field"><div class="assoc-field-label">Relationship Score</div><div class="assoc-field-val not-captured">Not captured yet</div></div>
+                                <div class="assoc-field"><div class="assoc-field-label">Opportunities Influenced</div><div class="assoc-field-val not-captured">Not captured yet</div></div>
+                                <div class="assoc-field" style="grid-column:1/-1;border-bottom:none;"><div class="assoc-field-label">Revenue Influenced</div><div class="assoc-field-val not-captured">Not captured yet</div></div>
+                            </div>
+                        </div>
+                        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Do you want this? Confirming yes defines the Airtable schema for Phase 2.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Data Source Status</div>
+                    <table class="source-status-table">
+                        <thead>
+                            <tr><th>Source</th><th>Status</th><th>Notes</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2026 BDM Tracker (Google Sheets)</td>
+                                <td><span class="ss-badge ss-connected">● Connected</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">Memberships, sponsorships, events — Apps Script deployment pending</td>
+                            </tr>
+                            <tr>
+                                <td>2025 Historical Report (Google Sheets)</td>
+                                <td><span class="ss-badge ss-connected">● Connected</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">Full-year actuals and category breakdown loaded</td>
+                            </tr>
+                            <tr>
+                                <td>Post-Event Survey Responses</td>
+                                <td><span class="ss-badge ss-missing">✗ Missing</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">Form is live — response sheet not yet connected to dashboard</td>
+                            </tr>
+                            <tr>
+                                <td>Event Outcomes</td>
+                                <td><span class="ss-badge ss-missing">✗ Missing</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">Contacts made, follow-ups, opportunities — not tracked anywhere</td>
+                            </tr>
+                            <tr>
+                                <td>CRM / Opportunities</td>
+                                <td><span class="ss-badge ss-unknown">? Unknown</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">GHL may contain relevant data — not yet evaluated</td>
+                            </tr>
+                            <tr>
+                                <td>Follow-up Tracking</td>
+                                <td><span class="ss-badge ss-missing">✗ Missing</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">No system currently captures BDM follow-up completion</td>
+                            </tr>
+                            <tr>
+                                <td>Relationship Tracking</td>
+                                <td><span class="ss-badge ss-missing">✗ Missing</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">No contact records, engagement history, or relationship health data</td>
+                            </tr>
+                            <tr>
+                                <td>Revenue Attribution</td>
+                                <td><span class="ss-badge ss-missing">✗ Missing</span></td>
+                                <td style="font-size:12px;color:var(--text-dim);">No mechanism to tie BDM activity to closed business</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Strategic Questions We Cannot Yet Answer</div>
+                    <div class="strategic-q-grid">
+                        <div>
+                            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:12px;">The Questions</div>
+                            <ul class="sq-list">
+                                <li><span class="sq-num">01</span>Which associations generate opportunities?</li>
+                                <li><span class="sq-num">02</span>Which memberships create measurable value?</li>
+                                <li><span class="sq-num">03</span>Which events strengthen relationships?</li>
+                                <li><span class="sq-num">04</span>Which BDM activities lead to business outcomes?</li>
+                                <li><span class="sq-num">05</span>Which firms repeatedly engage CNC?</li>
+                                <li><span class="sq-num">06</span>Which referrals generate projects?</li>
+                                <li><span class="sq-num">07</span>Which relationships are growing versus declining?</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:12px;">Why We Cannot Answer Them Today</div>
+                            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6;">The following data is not currently captured in any CNC system:</div>
+                            <div class="sq-blocker">Contact records</div>
+                            <div class="sq-blocker">Follow-up records</div>
+                            <div class="sq-blocker">Opportunity records</div>
+                            <div class="sq-blocker">Referral attribution</div>
+                            <div class="sq-blocker">Relationship history</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-footer">Roadmap as of Jun 4, 2026 · The Knowing Agency</div>
             </div>
 
         </div><!-- /main -->
@@ -754,7 +1087,7 @@
 // While null, the baked-in constants below are used.
 // ═══════════════════════════════════════════════════════════════════
 const DATA_REFRESHED = 'Jun 2, 2026';
-const APPS_SCRIPT_URL = null; // e.g. 'https://script.google.com/macros/s/ABC.../exec'
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/theknowingagency.com/s/AKfycbwoscceVpy1SQbQyqU2HMcGa1fhU3VFRRAjT17dp536sn8c6Yp3d1bTTvmQcwkqhEvW/exec';
 
 const BDMS = [
     { id:'ed',    name:'Ed Lundberg',      initials:'EL', territory:'Ohio · West Virginia' },
@@ -1279,7 +1612,7 @@ function initStatus() {
     }
 
     // ── Tab 2: F1 Rankings (by YTD events) ──
-    const ranked = [...bdmData].sort((a,b) => b.evts - a.evts);
+    const ranked = [...bdmData].sort((a,b) => b.evts - a.evts || a.total - b.total);
     const top3 = ranked.slice(0,3);
     const podiumColors = ['p-gold','p-silver','p-bronze'];
     const podiumHeights = [100,72,56];
@@ -1431,9 +1764,10 @@ function renderDDTiles() {
     }
 }
 
-function ddTabSwitch(btn, tabId, panelId) {
-    document.querySelectorAll(`#${panelId} .dd-tab`).forEach(t => t.classList.remove('active'));
-    document.querySelectorAll(`#${panelId} .dd-tab-content`).forEach(t => t.classList.remove('active'));
+function ddTabSwitch(btn, tabId) {
+    const panel = btn.closest('.drilldown-panel');
+    panel.querySelectorAll('.dd-tab').forEach(t => t.classList.remove('active'));
+    panel.querySelectorAll('.dd-tab-content').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     $id(tabId).classList.add('active');
 }
@@ -1542,8 +1876,8 @@ function initDrilldown(bdmId) {
         <div>
             <div class="drilldown-panel" style="margin-bottom:14px;">
                 <div class="dd-tab-bar" id="dd-evt-tabs">
-                    <button class="dd-tab active" onclick="ddTabSwitch(this,'dd-tab-2026','dd-evt-tabs')">2026 Events</button>
-                    <button class="dd-tab" onclick="ddTabSwitch(this,'dd-tab-2025','dd-evt-tabs')">2025 Spend</button>
+                    <button class="dd-tab active" onclick="ddTabSwitch(this,'dd-tab-2026')">2026 Events</button>
+                    <button class="dd-tab" onclick="ddTabSwitch(this,'dd-tab-2025')">2025 Spend</button>
                 </div>
                 <div class="dd-tab-content active" id="dd-tab-2026">
                     <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;">Status labels are defaults — no status tracked in source data yet.</div>
@@ -1665,10 +1999,8 @@ function initMemberships() {
     const sponBudget  = BUDGET_2026.sponsorships;
     const sponVariance = sponActual - sponBudget;
 
-    // Projected EOY Variance: (actual charged / months elapsed) * 12 - full-year budget
-    const monthsElapsed = 5; // Jan–May charged
-    const projEOYRate   = monthsElapsed > 0 ? (memCharged / monthsElapsed) * 12 : 0;
-    const projEOYVar    = projEOYRate - memBudget;
+    // Projected EOY Variance: total known exposure (charged + anticipated) vs full-year budget
+    const projEOYVar    = memActual - memBudget;
     const pendingCount  = MEMBERSHIPS_2026.filter(m=>m.status==='anticipated').length;
 
     // KPI cards
@@ -1834,6 +2166,20 @@ async function doLogin() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function toggleSidebar() {
+    const s = $id('sidebar'); const o = $id('sidebar-overlay');
+    const open = s.classList.toggle('open');
+    o.classList.toggle('visible', open);
+}
+function closeSidebar() {
+    $id('sidebar').classList.remove('open');
+    $id('sidebar-overlay').classList.remove('visible');
+}
+// Auto-close sidebar on nav item click (mobile)
+document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); });
+});
 </script>
 </body>
 </html>

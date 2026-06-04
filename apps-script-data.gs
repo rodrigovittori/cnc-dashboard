@@ -16,19 +16,30 @@
 //
 // TO RESTRICT TO TKA ACCOUNTS ONLY (after confirming it works):
 //   Redeploy → change "Who has access" to "Anyone within theknowingagency.com"
-//   Note: users will need to be signed into their TKA Google account to load data.
 //
-// SOURCE FILES (TKA Drive copies — never modify Brittany's originals):
-//   BDM Memberships 2026: https://docs.google.com/spreadsheets/d/1iVrq8je5yf1q0_jrqUCtbWIv7UekEzPZsVSoLz24thQ
-//   CNC BDM Report 2025:  https://docs.google.com/spreadsheets/d/18haHWoecqRSBo_ga3jQtW9N6xS1urEMoU_s0yykXqQg
+// SOURCE FILE (TKA Drive — COPY only, never modify Brittany's originals):
+//   BDM_Memberships_Yearly_Sponsorships_COPY
+//   Sheet ID: 1iVrq8je5yf1q0_jrqUCtbWIv7UekEzPZsVSoLz24thQ
 //
-// COLUMN NAMES TO VERIFY (open the sheet and confirm these match exactly):
-//   Memberships 2026 tab: BDM, Association, Annual Cost, Budgeted, Actual, Variance, Renewal Month, Status, Notes
-//   Sponsorships 2026 tab: BDM, Event/Association, Amount, Budgeted, Actual, Date
-//   Events tab: BDM, Organization, Event Date, Type, Territory
-//   If column names differ, update the property lookups in getRows() calls below.
+// TAB NAMES (verified against actual sheet — Apr 2026 CSV export):
+//   Sponsorships: '2026 Tracking - Sponsorships'
+//   Events:       '2026 Tracking - Events'
+//   Memberships:  No clean tracking tab exists yet.
+//                 Dashboard uses baked-in data until a structured tab is created.
+//                 To add live memberships, create a tab named '2026 Tracking - Memberships'
+//                 with columns: Association, BDM, Annual Cost, Month of Renewal, Status, Notes
+//
+// KNOWN DATA QUALITY NOTES (in Brittany's sheet — do not "fix" here, flag to leadership):
+//   - Some BDM cells contain "?" or informal names (e.g. "Molly?", "Flo Terry")
+//   - Some events list two BDMs in one cell (newline-separated) — script takes the first
+//   - Some org names have typos (e.g. "ABV Indianna-Kentucky", "ACG Kentucky")
+//   - Event dates use M-D-YY format and sometimes ranges (e.g. "2-4/25-26") — script takes start date
 
-const MEMBERSHIP_SHEET_ID = '1iVrq8je5yf1q0_jrqUCtbWIv7UekEzPZsVSoLz24thQ';
+const SHEET_ID = '1iVrq8je5yf1q0_jrqUCtbWIv7UekEzPZsVSoLz24thQ';
+
+const SPON_TAB = '2026 Tracking - Sponsorships';
+const EVT_TAB  = '2026 Tracking - Events';
+const MEM_TAB  = '2026 Tracking - Memberships'; // create this tab to enable live memberships
 
 const BDM_ID_MAP = {
   'Ed Lundberg':      'ed',
@@ -49,42 +60,15 @@ const BDM_ID_MAP = {
 
 function doGet() {
   try {
-    const ss = SpreadsheetApp.openById(MEMBERSHIP_SHEET_ID);
+    const ss = SpreadsheetApp.openById(SHEET_ID);
 
-    const memRows  = getRows(ss, 'Memberships 2026');
-    const sponRows = getRows(ss, 'Sponsorships 2026');
-    const evtRows  = getRows(ss, 'Events');
-
-    const memberships = memRows.map(r => ({
-      assoc:  str(r['Association']),
-      bdm:    bdmId(r['BDM']),
-      cost:   num(r['Actual'] !== '' && r['Actual'] != null ? r['Actual'] : r['Annual Cost']),
-      month:  parseMonth(r['Renewal Month']),
-      status: str(r['Status']).toLowerCase().includes('charged') ? 'charged' : 'anticipated',
-      note:   str(r['Notes']),
-    })).filter(m => m.assoc && m.cost > 0);
-
-    const sponsorships = sponRows.map(r => ({
-      assoc:  str(r['Event/Association']),
-      bdm:    bdmId(r['BDM']),
-      cost:   num(r['Actual'] !== '' && r['Actual'] != null ? r['Actual'] : r['Amount']),
-      month:  parseMonth(r['Date']),
-      status: 'charged',
-    })).filter(s => s.assoc && s.cost > 0);
-
-    // NOTE: The Events tab uses "Organization" as the event/meeting name field.
-    // If Brittany's sheet has a separate "Event Name" column, update r['Organization'] below.
-    const events = evtRows.map(r => ({
-      date: fmtDate(r['Event Date']),
-      name: str(r['Organization']),
-      bdm:  bdmId(r['BDM']),
-      org:  str(r['Territory']),
-      type: str(r['Type']),
-    })).filter(e => e.date && e.name);
+    const sponsorships = parseSponsorships(ss);
+    const events       = parseEvents(ss);
+    const memberships  = parseMemberships(ss); // returns null if tab doesn't exist
 
     const payload = {
       refreshed:    Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'MMM d, yyyy'),
-      memberships,
+      memberships,  // null = dashboard keeps baked-in data
       sponsorships,
       events,
     };
@@ -100,24 +84,142 @@ function doGet() {
   }
 }
 
-function getRows(ss, sheetName) {
-  const sheet = ss.getSheetByName(sheetName);
+// ── SPONSORSHIPS ────────────────────────────────────────────────────
+// Tab has a title row ("Charged Year-to-Date...") before the actual headers.
+// Also has summary rows (TOTAL, Budgeted, Variance) and section labels to skip.
+function parseSponsorships(ss) {
+  const sheet = ss.getSheetByName(SPON_TAB);
+  if (!sheet) return [];
+  const values = sheet.getDataRange().getValues();
+
+  // Find actual header row (contains 'Association Name')
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(6, values.length); i++) {
+    if (String(values[i][0]).trim() === 'Association Name') { headerIdx = i; break; }
+  }
+  if (headerIdx < 0) return [];
+
+  const headers = values[headerIdx].map(h => String(h).trim());
+  const results = [];
+
+  for (let i = headerIdx + 1; i < values.length; i++) {
+    const row   = values[i];
+    const col0  = String(row[0] || '').trim();
+
+    // Skip blanks, section labels, and summary rows
+    if (!col0 ||
+        col0 === 'Association Name' ||
+        col0 === 'Anticipated through EOY' ||
+        col0 === 'Other' ||
+        col0 === 'Year Round Sponsorships') continue;
+
+    const obj = {};
+    headers.forEach((h, idx) => { if (h) obj[h] = row[idx]; });
+
+    const cost = num(obj['Annual Cost']);
+    if (!cost) continue; // skips TOTAL / Budgeted / Variance rows (they have no $ in col0)
+
+    results.push({
+      assoc:  col0 === '?' ? 'Sponsorship (to confirm)' : col0,
+      bdm:    bdmId(str(obj['BDM'])),
+      cost:   cost,
+      month:  parseMonth(obj['Month of Renewal']),
+      status: 'charged',
+      note:   str(obj['Notes']),
+    });
+  }
+
+  return results;
+}
+
+// ── EVENTS ──────────────────────────────────────────────────────────
+// Headers: Date | Name of Event | BDM | Organization
+// Dates in M-D-YY or M-D/D-YY (range) format.
+// Some BDM cells have two names separated by newline — take first.
+function parseEvents(ss) {
+  const sheet = ss.getSheetByName(EVT_TAB);
   if (!sheet) return [];
   const values = sheet.getDataRange().getValues();
   if (values.length < 2) return [];
+
   const headers = values[0].map(h => String(h).trim());
-  return values.slice(1).map(row => {
+  const results = [];
+
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
     const obj = {};
-    headers.forEach((h, i) => { if (h) obj[h] = row[i]; });
-    return obj;
-  }).filter(r => headers.some(h => r[h] !== '' && r[h] != null));
+    headers.forEach((h, idx) => { if (h) obj[h] = row[idx]; });
+
+    const dateStr = str(obj['Date']);
+    const name    = str(obj['Name of Event']);
+    if (!dateStr || !name) continue;
+
+    // Multi-BDM cell: take first name only
+    const bdmRaw = str(obj['BDM']).split('\n')[0].trim();
+
+    results.push({
+      date: parseEventDate(dateStr),
+      name: name,
+      bdm:  bdmId(bdmRaw),
+      org:  str(obj['Organization']),
+      type: str(obj['Type'] || ''),
+    });
+  }
+
+  return results.filter(e => e.date && e.name);
 }
 
-function str(v)   { return v == null ? '' : String(v).trim(); }
-function num(v)   { return parseFloat(String(v || 0).replace(/[$,\s]/g, '')) || 0; }
+// ── MEMBERSHIPS ─────────────────────────────────────────────────────
+// Returns null if the tab doesn't exist yet.
+// Expected columns when tab is created: Association | BDM | Annual Cost | Month of Renewal | Status | Notes
+function parseMemberships(ss) {
+  const sheet = ss.getSheetByName(MEM_TAB);
+  if (!sheet) return null;
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return null;
+
+  const headers = values[0].map(h => String(h).trim());
+  const results = [];
+
+  for (let i = 1; i < values.length; i++) {
+    const row = values[i];
+    const obj = {};
+    headers.forEach((h, idx) => { if (h) obj[h] = row[idx]; });
+
+    const assoc = str(obj['Association']);
+    const cost  = num(obj['Annual Cost']);
+    if (!assoc || !cost) continue;
+
+    const statusRaw = str(obj['Status']).toLowerCase();
+    results.push({
+      assoc:  assoc,
+      bdm:    bdmId(str(obj['BDM'])),
+      cost:   cost,
+      month:  parseMonth(obj['Month of Renewal']),
+      status: statusRaw.includes('charged') ? 'charged' : 'anticipated',
+      note:   str(obj['Notes']),
+    });
+  }
+
+  return results.length ? results : null;
+}
+
+// ── HELPERS ─────────────────────────────────────────────────────────
+
+function str(v) { return v == null ? '' : String(v).trim(); }
+
+function num(v) { return parseFloat(String(v || 0).replace(/[$,\s]/g, '')) || 0; }
+
 function bdmId(v) {
   const s = str(v);
-  return BDM_ID_MAP[s] || (s ? s.toLowerCase().split(' ')[0] : null);
+  if (!s) return null;
+  if (BDM_ID_MAP[s]) return BDM_ID_MAP[s];
+  // Partial match on first + last name
+  for (const [full, id] of Object.entries(BDM_ID_MAP)) {
+    const parts = full.toLowerCase().split(' ');
+    if (parts.some(p => s.toLowerCase().startsWith(p) && p.length > 2)) return id;
+  }
+  return null;
 }
 
 function parseMonth(v) {
@@ -131,8 +233,23 @@ function parseMonth(v) {
   return (n >= 1 && n <= 12) ? n : 0;
 }
 
-function fmtDate(v) {
+// Parses M-D-YY and M-D/D-YY (date range — takes start date)
+function parseEventDate(v) {
   if (!v) return '';
-  if (v instanceof Date) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
-  return String(v).substring(0, 10);
+  if (v instanceof Date) {
+    return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
+  const s = String(v).trim();
+  // Remove range suffix: "2-4/25-26" → "2-4-26"
+  const clean = s.replace(/\/\d+/, '');
+  const parts = clean.split('-');
+  if (parts.length >= 3) {
+    const m = parseInt(parts[0]);
+    const d = parseInt(parts[1]);
+    const y = parseInt(parts[2]) + 2000; // 26 → 2026
+    if (!isNaN(m) && !isNaN(d) && !isNaN(y)) {
+      return y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    }
+  }
+  return '';
 }
