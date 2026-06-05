@@ -748,6 +748,24 @@
                         <button class="view-btn" id="evt-cal-btn" onclick="evtView('cal',this)">Calendar</button>
                     </div>
                 </div>
+                <div class="card" style="border:2px dashed var(--border);background:#FAFAFA;">
+                    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
+                        Event Outcome Tracking
+                        <span class="page-title-badge" style="background:#FEF3C7;color:#92400E;">Coming Soon</span>
+                    </div>
+                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;">Events are currently tracked by attendance only. Outcome data — what happened at each event — is not yet captured. The fields below represent the next layer of intelligence.</p>
+                    <div class="outcome-fields">
+                        <div class="outcome-field"><div class="outcome-field-label">Contacts Made</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Follow-ups Scheduled</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Opportunities Identified</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Strategic Introductions</div><div class="outcome-field-val">Not captured</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">Post-Event Rating</div><div class="outcome-field-val">Via survey form</div></div>
+                        <div class="outcome-field"><div class="outcome-field-label">BDM Notes</div><div class="outcome-field-val">Not captured</div></div>
+                    </div>
+                    <div style="margin-top:14px;padding:10px 14px;background:var(--blue-bg);border-radius:3px;font-size:12px;color:var(--blue);line-height:1.6;">
+                        <strong>Path to capture:</strong> Post-event survey (already live) collects contacts made, rating, and notes. Apps Script deployed Jun 4, 2026 — response sheet connection pending.
+                    </div>
+                </div>
                 <div class="card" id="evt-list-view">
                     <div class="card-title" id="events-card-title">All 2026 Events — BDM Field Activity</div>
                     <div class="table-wrap">
@@ -771,24 +789,6 @@
                         <div style="font-size:32px;margin-bottom:10px;">📅</div>
                         <div style="font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;">Calendar View — Coming Soon</div>
                         <div style="font-size:12px;margin-top:6px;">Events pinned to calendar dates will display here once a live calendar feed is connected.</div>
-                    </div>
-                </div>
-                <div class="card" style="border:2px dashed var(--border);background:#FAFAFA;">
-                    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;">
-                        Event Outcome Tracking
-                        <span class="page-title-badge" style="background:#FEF3C7;color:#92400E;">Coming Soon</span>
-                    </div>
-                    <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:14px;">Events are currently tracked by attendance only. Outcome data — what happened at each event — is not yet captured. The fields below represent the next layer of intelligence.</p>
-                    <div class="outcome-fields">
-                        <div class="outcome-field"><div class="outcome-field-label">Contacts Made</div><div class="outcome-field-val">Not captured</div></div>
-                        <div class="outcome-field"><div class="outcome-field-label">Follow-ups Scheduled</div><div class="outcome-field-val">Not captured</div></div>
-                        <div class="outcome-field"><div class="outcome-field-label">Opportunities Identified</div><div class="outcome-field-val">Not captured</div></div>
-                        <div class="outcome-field"><div class="outcome-field-label">Strategic Introductions</div><div class="outcome-field-val">Not captured</div></div>
-                        <div class="outcome-field"><div class="outcome-field-label">Post-Event Rating</div><div class="outcome-field-val">Via survey form</div></div>
-                        <div class="outcome-field"><div class="outcome-field-label">BDM Notes</div><div class="outcome-field-val">Not captured</div></div>
-                    </div>
-                    <div style="margin-top:14px;padding:10px 14px;background:var(--blue-bg);border-radius:3px;font-size:12px;color:var(--blue);line-height:1.6;">
-                        <strong>Path to capture:</strong> Post-event survey (already live) collects contacts made, rating, and notes. Connection to this dashboard is pending Apps Script deployment.
                     </div>
                 </div>
                 <div class="data-footer" id="footer-events"></div>
@@ -1114,7 +1114,7 @@
 // ═══════════════════════════════════════════════════════════════════
 const DASHBOARD_VERSION = 'v0.1.0';
 const DATA_REFRESHED = 'Jun 2, 2026';
-const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/theknowingagency.com/s/AKfycbwoscceVpy1SQbQyqU2HMcGa1fhU3VFRRAjT17dp536sn8c6Yp3d1bTTvmQcwkqhEvW/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoscceVpy1SQbQyqU2HMcGa1fhU3VFRRAjT17dp536sn8c6Yp3d1bTTvmQcwkqhEvW/exec';
 
 const BDMS = [
     { id:'ed',    name:'Ed Lundberg',      initials:'EL', territory:'Ohio · West Virginia' },
