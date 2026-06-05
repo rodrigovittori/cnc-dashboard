@@ -8,7 +8,7 @@
 //   4. Click Deploy > New deployment
 //   5. Click the gear icon next to "Select type" → choose "Web app"
 //   6. Description: "CNC Dashboard Data v1"
-//      Execute as: Me (rodrigo.vittori@theknowingagency.com)
+//      Execute as: Me (use the Google account that owns the source sheet)
 //      Who has access: Anyone with Google Account
 //   7. Click Deploy → copy the URL that appears
 //   8. Open index.html, find APPS_SCRIPT_URL, replace null with the URL in quotes
