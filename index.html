@@ -2131,9 +2131,9 @@ async function loadLiveData() {
         if (!res.ok) return false;
         const data = await res.json();
         if (data.error) { console.warn('Apps Script error:', data.error); return false; }
-        MEMBERSHIPS_2026.splice(0, MEMBERSHIPS_2026.length, ...data.memberships);
-        SPONSORSHIPS_2026.splice(0, SPONSORSHIPS_2026.length, ...data.sponsorships);
-        EVENTS_2026.splice(0, EVENTS_2026.length, ...data.events);
+        if (data.memberships)  MEMBERSHIPS_2026.splice(0,  MEMBERSHIPS_2026.length,  ...data.memberships);
+        if (data.sponsorships) SPONSORSHIPS_2026.splice(0, SPONSORSHIPS_2026.length, ...data.sponsorships);
+        if (data.events)       EVENTS_2026.splice(0,       EVENTS_2026.length,       ...data.events);
         window._liveRefreshed = data.refreshed;
         return true;
     } catch(e) {
