@@ -458,6 +458,30 @@
             .kpi-value { font-size: 24px; }
             .drilldown-name { font-size: 18px; }
         }
+        /* ── SIDEBAR COLLAPSE ───────────────────────────────── */
+        .sidebar { transition: width 0.22s ease; }
+        .app-body.sidebar-collapsed .sidebar { width: 0; overflow: hidden; }
+        .sidebar-collapse-btn {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            width: 100%; padding: 10px 16px; background: none; border: none;
+            border-top: 1px solid var(--sidebar-border);
+            color: var(--text-dim); font-size: 11px; font-weight: 600;
+            letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+        }
+        .sidebar-collapse-btn:hover { background: #EFEFEF; color: var(--text); }
+        .sidebar-expand-tab {
+            position: fixed; left: 0; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 48px; z-index: 200; display: none;
+            align-items: center; justify-content: center; cursor: pointer;
+            background: var(--sidebar-bg); border: 1px solid var(--sidebar-border);
+            border-left: none; border-radius: 0 4px 4px 0; color: var(--text-dim); font-size: 12px;
+        }
+        .app-body.sidebar-collapsed .sidebar-expand-tab { display: flex; }
+
+        /* ── PAGE TRANSITION ─────────────────────────────── */
+        .page.active { animation: pgFadeIn 0.14s ease; }
+        @keyframes pgFadeIn { from { opacity: 0.5; } to { opacity: 1; } }
+
         /* ── DATA ROADMAP PAGE ──────────────────────────────── */
         .maturity-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
         .maturity-col { border-radius:3px; overflow:hidden; border:1px solid var(--border); }
@@ -540,7 +564,7 @@
         <div class="login-body">
             <div class="login-field">
                 <label class="login-label" for="u">Username</label>
-                <input class="login-input" id="u" type="text" placeholder="admin" autocomplete="username">
+                <input class="login-input" id="u" type="text" placeholder="username" autocomplete="username">
             </div>
             <div class="login-field">
                 <label class="login-label" for="p">Password</label>
@@ -549,7 +573,7 @@
             <button class="login-btn" onclick="doLogin()">Sign In</button>
             <div class="login-error" id="login-error">Invalid credentials. Please try again.</div>
         </div>
-        <div class="login-footer">Internal preview &middot; Jun 4, 2026 Meeting</div>
+        <div class="login-footer" id="login-version">v0.1.0</div>
     </div>
 </div>
 
@@ -596,7 +620,9 @@
                 <button class="sidebar-item ext" onclick="window.open('https://docs.google.com/spreadsheets/d/1iVrq8je5yf1q0_jrqUCtbWIv7UekEzPZsVSoLz24thQ/edit','_blank')">↗ 2026 BDM Tracker</button>
                 <button class="sidebar-item ext" onclick="window.open('https://docs.google.com/spreadsheets/d/18haHWoecqRSBo_ga3jQtW9N6xS1urEMoU_s0yykXqQg/edit','_blank')">↗ 2025 BDM Report</button>
             </div>
+            <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Collapse sidebar">◀ Collapse</button>
         </div>
+        <button class="sidebar-expand-tab" onclick="toggleSidebarCollapse()" title="Expand sidebar">▶</button>
 
         <div class="main">
 
@@ -1005,7 +1031,7 @@
                             <tr>
                                 <td>2026 BDM Tracker (Google Sheets)</td>
                                 <td><span class="ss-badge ss-connected">● Connected</span></td>
-                                <td style="font-size:12px;color:var(--text-dim);">Memberships, sponsorships, events — Apps Script deployment pending</td>
+                                <td style="font-size:12px;color:var(--text-dim);">Memberships, sponsorships, events — Apps Script deployed Jun 4, 2026</td>
                             </tr>
                             <tr>
                                 <td>2025 Historical Report (Google Sheets)</td>
@@ -1086,6 +1112,7 @@
 // Live fetch: set APPS_SCRIPT_URL below to the deployed Apps Script URL.
 // While null, the baked-in constants below are used.
 // ═══════════════════════════════════════════════════════════════════
+const DASHBOARD_VERSION = 'v0.1.0';
 const DATA_REFRESHED = 'Jun 2, 2026';
 const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/theknowingagency.com/s/AKfycbwoscceVpy1SQbQyqU2HMcGa1fhU3VFRRAjT17dp536sn8c6Yp3d1bTTvmQcwkqhEvW/exec';
 
@@ -2128,12 +2155,18 @@ const PAGE_INITS = {
 
 let initializedPages = new Set();
 
+function toggleSidebarCollapse() {
+    document.querySelector('.app-body').classList.toggle('sidebar-collapsed');
+    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+}
+
 function showPage(name, btn, bdmId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
 
     const pageEl = $id('page-' + name);
     if (pageEl) pageEl.classList.add('active');
+    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
 
     if (btn) btn.classList.add('active');
     else {
@@ -2166,6 +2199,10 @@ async function doLogin() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.addEventListener('DOMContentLoaded', () => {
+    const vEl = $id('login-version');
+    if (vEl) vEl.textContent = DASHBOARD_VERSION + ' · ' + DATA_REFRESHED;
+});
 
 function toggleSidebar() {
     const s = $id('sidebar'); const o = $id('sidebar-overlay');
